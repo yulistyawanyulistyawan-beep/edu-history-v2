@@ -1,0 +1,35 @@
+EDU-HISTORY v2 - PANDUAN DEPLOY KE NETLIFY
+==========================================
+
+Isi folder:
+  public/index.html            -> aplikasi (satu berkas)
+  netlify/functions/api.mjs    -> server (menyimpan token, durasi, soal, nilai)
+  netlify.toml, package.json   -> pengaturan Netlify
+
+CARA 1 (disarankan): lewat GitHub
+  1. Unggah seluruh isi folder ini ke repositori GitHub baru.
+  2. Di Netlify: Add new site > Import an existing project > pilih repositori.
+  3. Biarkan pengaturan bawaan (sudah dibaca dari netlify.toml) > Deploy.
+
+CARA 2: lewat Netlify CLI (di komputer)
+  npm install -g netlify-cli
+  cd edu-history
+  npm install
+  netlify deploy --prod
+
+Setelah deploy:
+  - Buka alamat situs, masuk Panel Guru (sandi: sejarah77).
+  - Di bawah judul panel harus tertulis "Online: ... tersimpan terpusat".
+    Bila tertulis "Lokal", berarti server belum aktif (cek bagian Functions di Netlify).
+
+MENGGANTI SANDI GURU (disarankan, karena sandi bawaan sudah diketahui):
+  Netlify > Site configuration > Environment variables > tambah
+    TEACHER_PASS = sandi-baru-anda
+  lalu deploy ulang. (Bila dikosongkan, sandi tetap sejarah77.)
+
+CATATAN:
+  - Token SEJARAH45 berlaku sampai guru menggantinya di panel.
+  - Siswa wajib punya internet saat menekan Mulai dan saat selesai.
+    Bila sinyal putus saat selesai, nilai disimpan di HP siswa dan dikirim otomatis.
+  - Dibuka tanpa server (klik dua kali berkas, atau hosting statis tanpa Functions),
+    aplikasi tetap jalan dalam mode Lokal seperti versi sebelumnya.

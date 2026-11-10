@@ -1,0 +1,1739 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#c25578">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Edu-History - design by PakNanang</title>
+  <style>
+    :root {
+      --primary: #c25578;
+      --primary-dark: #9e3d5e;
+      --accent: #e0a040;
+      --success: #2f9e6e;
+      --danger: #dc2626;
+      --bg: #fdf0f4;
+      --card: #ffffff;
+      --text: #7a3550;
+      --text-dark: #3d1f2d;
+    }
+    * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
+    body { background: linear-gradient(160deg, #fdf0f4, #f9dfe8); color: var(--text-dark); display: flex; justify-content: center; min-height: 100vh; padding: 15px; }
+    .container { width: 100%; max-width: 650px; background: var(--card); border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(158,61,94,0.18); overflow: hidden; display: flex; flex-direction: column; position: relative; align-self: flex-start; }
+
+    .header { background: linear-gradient(135deg, #e7899f, var(--primary)); color: white; padding: 22px 20px 18px; text-align: center; }
+    .header .ornament { font-size: 0.8rem; letter-spacing: 8px; opacity: 0.85; margin-bottom: 4px; }
+    .header h1 { font-family: Georgia, 'Times New Roman', serif; font-size: 2rem; font-weight: 700; letter-spacing: 3px; }
+    .header .tagline { font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-size: 0.92rem; opacity: 0.95; margin-top: 4px; }
+    .header .credit { font-size: 0.72rem; letter-spacing: 2px; opacity: 0.85; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.35); display: inline-block; }
+
+    .content { padding: 20px; flex: 1; position: relative; }
+    .view { display: none; }
+    .view.active { display: block; }
+
+    .welcome { font-family: Georgia, 'Times New Roman', serif; font-style: italic; text-align: center; color: var(--text); font-size: 0.95rem; margin-bottom: 16px; line-height: 1.5; }
+
+    .form-group { margin-bottom: 14px; }
+    label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 5px; color: var(--text); }
+    input[type="text"], input[type="number"], input[type="password"], select, textarea {
+      width: 100%; padding: 10px 14px; border: 1.5px solid #f6cfdc; border-radius: 8px; font-size: 0.95rem; outline: none; transition: 0.2s;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(194,85,120,0.18); }
+
+    .btn {
+      width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-secondary { background: #f1e3e8; color: #5b3a47; }
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-success { background: var(--success); color: white; }
+    .btn-warning { background: var(--accent); color: white; }
+
+    /* PANEL SUARA */
+    .sound-panel { background: #fff7fa; border: 1.5px dashed #eeb3c6; border-radius: 12px; padding: 12px; margin-bottom: 14px; }
+    .sound-title { font-size: 0.82rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .sound-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .sound-opt { border: 1.5px solid #f2c6d4; background: #fff; border-radius: 10px; padding: 9px 6px; font-size: 0.85rem; font-weight: 700; color: var(--text); cursor: pointer; transition: 0.15s; line-height: 1.3; }
+    .sound-opt small { display: block; font-weight: 500; font-size: 0.7rem; opacity: 0.75; }
+    .sound-opt:hover { border-color: var(--primary); }
+    .sound-opt.active { background: var(--primary); border-color: var(--primary); color: #fff; box-shadow: 0 3px 10px rgba(194,85,120,0.35); }
+    .sound-note { font-size: 0.72rem; color: #8b6575; margin-top: 8px; text-align: center; }
+
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #f1dce4; font-size: 0.85rem; font-weight: 700; }
+    .timer-badge { background: #fee2e2; color: var(--danger); padding: 4px 10px; border-radius: 20px; }
+    .progress-bar-bg { width: 100%; height: 7px; background: #f1dce4; border-radius: 10px; overflow: hidden; margin-bottom: 18px; }
+    .progress-bar-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.3s; }
+
+    #viewQuiz { user-select: none; -webkit-user-select: none; }
+    .question-box { background: #fff7fa; border: 1px solid #f1dce4; border-radius: 12px; padding: 16px; margin-bottom: 16px; font-size: 1rem; line-height: 1.5; color: var(--text-dark); font-weight: 600; }
+    .options-grid { display: flex; flex-direction: column; gap: 10px; }
+    .option-btn {
+      width: 100%; text-align: left; padding: 12px 14px; border: 1.5px solid #f1dce4; border-radius: 10px; background: white; font-size: 0.92rem; color: #3d1f2d; cursor: pointer; transition: 0.15s; display: flex; align-items: center; gap: 10px; line-height: 1.35;
+    }
+    .option-btn:hover { border-color: var(--primary); background: #fdf0f4; }
+    .option-btn .opt-badge { width: 28px; height: 28px; border-radius: 50%; background: #f1dce4; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+    .option-btn.selected { border-color: var(--primary); background: #fadbe6; font-weight: 700; }
+    .option-btn.selected .opt-badge { background: var(--primary); color: white; }
+
+    /* HASIL */
+    .result-card { text-align: center; padding: 20px 10px; position: relative; }
+    .reward-card { border-radius: 16px; padding: 18px 14px; margin-bottom: 18px; position: relative; z-index: 5; }
+    .reward-card.win { background: linear-gradient(135deg, #fff8e1, #ffe3ec); border: 2px solid #e8b04a; box-shadow: 0 8px 22px rgba(224,160,64,0.3); }
+    .reward-card.lose { background: #f4eef1; border: 2px solid #b9a3ab; }
+    .reward-icon { font-size: 3rem; line-height: 1.1; }
+    .reward-card h2 { font-family: Georgia, 'Times New Roman', serif; font-size: 1.9rem; letter-spacing: 2px; margin-top: 4px; }
+    .reward-card.win h2 { color: #b7791f; }
+    .reward-card.lose h2 { color: #6b5560; }
+    .reward-card p { font-size: 0.95rem; margin-top: 6px; color: #5b3a47; font-weight: 600; }
+    .score-circle { width: 130px; height: 130px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 0 auto 18px; box-shadow: 0 8px 20px rgba(194,85,120,0.3); }
+    .score-circle .score-num { font-size: 2.8rem; font-weight: 900; line-height: 1; }
+    .score-circle .score-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; margin-top: 4px; }
+
+    #starCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
+
+    .table-container { max-height: 300px; overflow-y: auto; border: 1px solid #f1dce4; border-radius: 8px; margin-top: 15px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid #f8eaf0; }
+    th { background: #fff7fa; color: var(--text); position: sticky; top: 0; font-weight: 700; }
+
+    .panel-box { background: #fff7fa; border: 1px solid #f1dce4; border-radius: 10px; padding: 14px; margin-bottom: 14px; }
+    .panel-title { font-size: 0.85rem; font-weight: 800; color: var(--primary); margin-bottom: 8px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
+    .token-display { font-size: 1.25rem; font-weight: 900; letter-spacing: 3px; color: var(--primary-dark); background: #fadbe6; padding: 6px 14px; border-radius: 8px; display: inline-block; }
+
+    /* OVERLAY KECURANGAN */
+    #cheatOverlay { display: none; position: fixed; inset: 0; z-index: 99999; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px; color: #fff; animation: sirenFlash 0.7s infinite alternate; }
+    #cheatOverlay.show { display: flex; }
+    @keyframes sirenFlash { from { background: #7f1010; } to { background: #ff1f1f; } }
+    #cheatOverlay .siren-icon { font-size: 4.5rem; animation: sirenShake 0.35s infinite alternate; }
+    @keyframes sirenShake { from { transform: rotate(-8deg) scale(1); } to { transform: rotate(8deg) scale(1.12); } }
+    #cheatOverlay h1 { font-family: Georgia, 'Times New Roman', serif; font-size: 2.6rem; letter-spacing: 3px; margin: 10px 0 6px; text-shadow: 0 3px 12px rgba(0,0,0,0.45); }
+    #cheatOverlay h2 { font-size: 1.35rem; letter-spacing: 2px; text-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+    #cheatOverlay .cheat-count { margin-top: 14px; font-weight: 700; background: rgba(0,0,0,0.3); padding: 6px 16px; border-radius: 20px; font-size: 0.9rem; }
+    #cheatOverlay .cheat-extra { margin-top: 12px; font-size: 0.92rem; max-width: 340px; line-height: 1.45; font-weight: 600; }
+    #cheatOverlay .btn { margin-top: 22px; width: auto; padding: 13px 28px; background: #fff; color: #b91c1c; font-size: 1rem; }
+
+    /* ===== TAMBAHAN: LAYOUT PENUH LAYAR ANDROID ===== */
+    html { -webkit-text-size-adjust: 100%; }
+    body { display: block; padding: 0; min-height: 100vh; min-height: 100dvh; background-attachment: fixed; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+    .container { max-width: 650px; margin: 0 auto; min-height: 100vh; min-height: 100dvh; border-radius: 0; box-shadow: none; align-self: auto; }
+    .header { position: relative; padding: calc(20px + env(safe-area-inset-top)) 56px 16px; }
+    .content { padding: 18px 18px calc(24px + env(safe-area-inset-bottom)); }
+    @media (min-width: 700px) {
+      body { padding: 15px; }
+      .container { min-height: 0; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(158,61,94,0.18); }
+    }
+    @media (max-width: 380px) {
+      .header h1 { font-size: 1.6rem; letter-spacing: 2px; }
+      .question-box { font-size: 0.95rem; padding: 14px; }
+      .option-btn { padding: 10px 12px; font-size: 0.88rem; }
+    }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* ===== TOMBOL SPEAKER + DROPDOWN ===== */
+    .sound-wrap { position: absolute; top: calc(10px + env(safe-area-inset-top)); right: 12px; z-index: 50; }
+    .speaker-btn { width: 42px; height: 42px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.75); background: rgba(255,255,255,0.22); color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; }
+    .speaker-btn svg { width: 22px; height: 22px; }
+    .sound-menu { display: none; position: absolute; right: 0; top: 48px; min-width: 215px; background: #fff; border-radius: 12px; box-shadow: 0 10px 30px rgba(120,30,60,0.3); overflow: hidden; border: 1px solid #f2c6d4; }
+    .sound-menu.open { display: block; }
+    .sound-item { display: block; width: 100%; text-align: left; padding: 11px 14px; border: 0; border-bottom: 1px solid #f8eaf0; background: #fff; font-size: 0.9rem; font-weight: 700; color: var(--text-dark); cursor: pointer; }
+    .sound-item:last-child { border-bottom: 0; }
+    .sound-item small { display: block; font-weight: 500; font-size: 0.72rem; color: #8b6575; margin-top: 1px; }
+    .sound-item.active { background: #fadbe6; color: var(--primary-dark); }
+
+    /* ===== UMPAN BALIK JAWABAN ===== */
+    .option-btn.correct { border-color: #16a34a; background: #dcfce7; color: #14532d; font-weight: 700; }
+    .option-btn.correct .opt-badge { background: #16a34a; color: #fff; }
+    .option-btn.wrong { border-color: #dc2626; background: #fee2e2; color: #7f1d1d; font-weight: 700; }
+    .option-btn.wrong .opt-badge { background: #dc2626; color: #fff; }
+    .option-btn.reveal { animation: blinkGreen 0.45s ease-in-out infinite; }
+    @keyframes blinkGreen {
+      0%, 100% { background: #dcfce7; border-color: #16a34a; box-shadow: 0 0 0 0 rgba(22,163,74,0); }
+      50% { background: #4ade80; border-color: #15803d; box-shadow: 0 0 0 4px rgba(22,163,74,0.35); }
+    }
+    .mark { margin-left: auto; flex-shrink: 0; width: 30px; height: 30px; animation: popMark 0.35s ease-out; }
+    .mark svg { width: 30px; height: 30px; display: block; }
+    @keyframes popMark { 0% { transform: scale(0); } 70% { transform: scale(1.35); } 100% { transform: scale(1); } }
+    .timer-badge.over { background: #fef3c7; color: #b45309; animation: pulseT 1s infinite; }
+    @keyframes pulseT { 50% { opacity: 0.6; } }
+
+    /* ===== KARTU RENUNGAN ===== */
+    #viewReflect.active { display: flex; flex-direction: column; justify-content: center; min-height: 60vh; min-height: 60dvh; }
+    .reflect-card { background: linear-gradient(160deg, #fff7fa, #fde4ed); border: 1.5px solid #f2c6d4; border-radius: 18px; padding: 26px 20px; text-align: center; box-shadow: 0 8px 24px rgba(194,85,120,0.18); animation: fadeUp 0.7s ease-out; }
+    .r-ornament { color: #d98aa5; letter-spacing: 8px; font-size: 0.9rem; }
+    .r-title { font-family: Georgia, 'Times New Roman', serif; font-size: 1.1rem; letter-spacing: 3px; text-transform: uppercase; color: var(--primary-dark); margin: 6px 0 14px; }
+    .reflect-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-size: 1.1rem; line-height: 1.75; color: #4a2636; }
+    .reflect-foot { margin-top: 14px; font-size: 0.78rem; color: #8b6575; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+    /* ===== DURASI (PANEL GURU) ===== */
+    .dur-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .dur-btn { padding: 10px 4px; border: 1.5px solid #f2c6d4; background: #fff; border-radius: 10px; font-weight: 800; color: var(--text); cursor: pointer; font-size: 0.9rem; }
+    .dur-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    #cheatOverlay { overflow-y: auto; padding-top: calc(24px + env(safe-area-inset-top)); padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="ornament">&#10022; &#10022; &#10022;</div>
+    <h1>Edu-History</h1>
+    <p class="tagline">Menapak Jejak Perjuangan Bangsa</p>
+    <span class="credit">design by PakNanang</span>
+    <div class="sound-wrap" id="soundWrap">
+      <button type="button" class="speaker-btn" id="speakerBtn" aria-label="Panel suara" aria-haspopup="true" aria-expanded="false" onclick="toggleSoundMenu(event)"><span id="speakerIcon"></span></button>
+      <div class="sound-menu" id="soundMenu" role="menu">
+        <button type="button" class="sound-item" data-mode="arcade1" onclick="selectSound('arcade1')">Arcade 1<small>Pixel Chill</small></button>
+        <button type="button" class="sound-item" data-mode="arcade2" onclick="selectSound('arcade2')">Arcade 2<small>Laser Cruise</small></button>
+        <button type="button" class="sound-item" data-mode="arcade3" onclick="selectSound('arcade3')">Arcade 3<small>Coin Garden</small></button>
+        <button type="button" class="sound-item" data-mode="mute" onclick="selectSound('mute')">Mute<small>Tanpa musik &amp; efek</small></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- VIEW 1: LOGIN SISWA -->
+    <div id="viewLogin" class="view active">
+      <p class="welcome">Selamat datang, Penjelajah Sejarah.<br>Lengkapi identitasmu untuk memulai perjalanan.</p>
+      <div class="form-group">
+        <label for="studentAbsen">Nomor Absen</label>
+        <input type="number" id="studentAbsen" placeholder="Contoh: 15" min="1" max="50">
+      </div>
+      <div class="form-group">
+        <label for="studentName">Nama Lengkap</label>
+        <input type="text" id="studentName" placeholder="Tulis nama lengkapmu" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label for="studentClass">Kelas</label>
+        <input type="text" id="studentClass" placeholder="Contoh: XI TKJ 1" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label for="inputToken" style="color: var(--primary); font-weight: 800;">Token Ujian (Diberikan oleh Guru)</label>
+        <input type="text" id="inputToken" placeholder="Ketik token ujian di sini..." style="text-transform: uppercase; letter-spacing: 2px; font-weight: 700;">
+      </div>
+
+            <button class="btn btn-primary" id="startBtn" onclick="startQuiz()">&#128640; Mulai Misi Kuis</button>
+
+      <div style="margin-top: 25px; text-align: center;">
+        <button class="btn btn-secondary" onclick="showTeacherLogin()" style="width: auto; margin: 0 auto; padding: 6px 16px; font-size: 0.8rem;">&#9881;&#65039; Akses Panel Guru</button>
+      </div>
+    </div>
+
+    <!-- VIEW RENUNGAN -->
+    <div id="viewReflect" class="view">
+      <div class="reflect-card">
+        <div class="r-ornament">&#10022; &#10022; &#10022;</div>
+        <div class="r-title">Kartu Renungan</div>
+        <p class="reflect-text" id="reflectText"></p>
+        <p class="reflect-foot">Bacalah dengan tenang, lalu mulailah dengan hati yang lapang.</p>
+      </div>
+      <button class="btn btn-primary" id="reflectBtn" onclick="beginGame()" style="margin-top: 18px;">Saya Siap, Mulai Permainan</button>
+    </div>
+
+    <!-- VIEW 2: KUIS -->
+    <div id="viewQuiz" class="view">
+      <div class="top-bar">
+        <div>Soal <span id="currentQNum">1</span> / <span id="totalQNum">80</span></div>
+        <div class="timer-badge" id="timerBadge">&#9201;&#65039; <span id="timerText">--:--</span></div>
+      </div>
+      <div class="progress-bar-bg">
+        <div id="progressBar" class="progress-bar-fill"></div>
+      </div>
+      <div id="qText" class="question-box">Memuat pertanyaan...</div>
+      <div id="optionsList" class="options-grid"></div>
+    </div>
+
+    <!-- VIEW 3: HASIL SKOR AKHIR -->
+    <div id="viewResult" class="view result-card">
+      <canvas id="starCanvas"></canvas>
+
+      <div id="rewardCard" class="reward-card win">
+        <div id="rewardIcon" class="reward-icon">&#127942;</div>
+        <h2 id="rewardTitle">KAMU BERHASIL</h2>
+        <p id="rewardSub">Selamat! Misi sejarah berhasil kamu taklukkan.</p>
+      </div>
+
+      <div class="score-circle">
+        <div id="scoreDisplay" class="score-num">0</div>
+        <div class="score-label">NILAI AKHIR</div>
+      </div>
+
+      <div style="background: #fff7fa; border: 1px solid #f1dce4; border-radius: 10px; padding: 12px; margin-bottom: 16px; text-align: left; font-size: 0.85rem; position: relative; z-index: 5;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+          <span>Nama Peserta:</span> <strong id="resName">-</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+          <span>Kelas &amp; Absen:</span> <strong id="resClassAbsen">-</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+          <span>Jawaban Benar:</span> <strong id="resCorrect" style="color: var(--success);">-</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span>Peringatan Kecurangan:</span> <strong id="resCheats" style="color: var(--danger);">0 kali</strong>
+        </div>
+      </div>
+
+      <p id="syncNote" style="font-size: 0.8rem; font-weight: 700; margin-bottom: 12px; position: relative; z-index: 5;"></p>
+      <button class="btn btn-primary" onclick="returnToHome()" style="position: relative; z-index: 5;">Selesai &amp; Keluar</button>
+    </div>
+
+    <!-- VIEW 4: LOGIN GURU -->
+    <div id="viewTeacherLogin" class="view">
+      <h3 style="margin-bottom: 15px; color: var(--primary);">Masuk Panel Guru</h3>
+      <div class="form-group">
+        <label for="teacherPass">Kata Sandi Guru</label>
+        <input type="password" id="teacherPass" placeholder="Masukkan kata sandi">
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn btn-secondary" onclick="returnToHome()">Batal</button>
+        <button class="btn btn-primary" onclick="verifyTeacherPass()">Masuk</button>
+      </div>
+    </div>
+
+    <!-- VIEW 5: DASHBOARD PANEL GURU -->
+    <div id="viewDashboard" class="view">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div><h3 style="color: var(--primary);">&#9881;&#65039; Panel Kendali Guru</h3><div id="syncStatus" style="font-size: 0.72rem; color: #8b6575; margin-top: 2px;"></div></div>
+        <button class="btn btn-secondary" onclick="returnToHome()" style="width: auto; padding: 5px 12px; font-size: 0.8rem;">Keluar Panel</button>
+      </div>
+
+      <!-- KONTROL TOKEN -->
+      <div class="panel-box">
+        <div class="panel-title">
+          <span>Kunci Token Ujian</span>
+          <span id="gameLockStatus" style="color: var(--success);">TERBUKA</span>
+        </div>
+        <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 8px;">Siswa wajib memasukkan token ini saat masuk ujian:</p>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+          <div id="activeTokenText" class="token-display">SEJARAH45</div>
+          <button class="btn btn-warning" onclick="changeTokenPrompt()" style="width: auto; padding: 6px 14px; font-size: 0.8rem;">Ganti Token</button>
+          <button class="btn btn-danger" onclick="toggleCloseGame()" id="closeGameBtn" style="width: auto; padding: 6px 14px; font-size: 0.8rem;">Kunci Akses</button>
+        </div>
+      </div>
+
+      <!-- DURASI PENGERJAAN -->
+      <div class="panel-box">
+        <div class="panel-title">
+          <span>Durasi Pengerjaan</span>
+          <span id="durationLabel" style="color: var(--primary-dark);">45 menit</span>
+        </div>
+        <div class="dur-row">
+          <button class="dur-btn" data-min="25" onclick="setDuration(25)">25 menit</button>
+          <button class="dur-btn" data-min="45" onclick="setDuration(45)">45 menit</button>
+          <button class="dur-btn" data-min="60" onclick="setDuration(60)">60 menit</button>
+        </div>
+        <p style="font-size: 0.76rem; color: #64748b; margin-top: 8px;">Bila waktu habis, siswa tetap boleh menyelesaikan soal sampai selesai.</p>
+      </div>
+
+      <!-- KONTROL UNGGAH / PASTE SOAL (BISA HINGGA 100+ SOAL) -->
+      <div class="panel-box">
+        <div class="panel-title">
+          <span>Bank Soal (<span id="totalQuestionsCount">80</span> Soal Aktif)</span>
+          <button class="btn btn-secondary" onclick="resetDefaultQuestions()" style="width: auto; padding: 3px 8px; font-size: 0.72rem;">Kembalikan Soal Awal</button>
+        </div>
+        <p style="font-size: 0.78rem; color: #64748b; margin-bottom: 8px;">
+          Tempel langsung naskah soal dari <strong>Microsoft Word</strong> (Mendukung hingga 100+ soal).<br>
+          Format: Soal $\rightarrow$ Opsi A sampai E $\rightarrow$ Baris Kunci (contoh: <code>Kunci: A</code>).
+        </p>
+        <textarea id="pasteSoalArea" rows="4" placeholder="Contoh:&#10;1. Siapa pengetik teks proklamasi?&#10;A. Sayuti Melik&#10;B. B.M. Diah&#10;C. Sukarni&#10;D. Moh. Hatta&#10;E. Wikana&#10;Kunci: A"></textarea>
+        <button class="btn btn-success" onclick="processPastedQuestions()" style="margin-top: 8px; font-size: 0.85rem; padding: 8px;">&#128229; Terapkan Soal Baru</button>
+      </div>
+
+      <!-- TABEL REKAP NILAI SISWA -->
+      <div class="panel-box">
+        <div class="panel-title">
+          <span>Rekap Hasil Ujian Siswa</span>
+          <span style="display: flex; gap: 6px;"><button class="btn btn-secondary" onclick="refreshRecords()" style="width: auto; padding: 4px 10px; font-size: 0.75rem;">&#128260; Muat Ulang</button><button class="btn btn-primary" onclick="downloadCSV()" style="width: auto; padding: 4px 10px; font-size: 0.75rem;">&#11015;&#65039; Unduh CSV</button></span>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Abs</th>
+                <th>Nama</th>
+                <th>Kls</th>
+                <th>Skor</th>
+                <th>Curang</th>
+              </tr>
+            </thead>
+            <tbody id="studentTableBody">
+              <tr><td colspan="5" style="text-align: center; color: #94a3b8;">Belum ada data nilai masuk.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <button class="btn btn-danger" onclick="clearRecords()" style="margin-top: 10px; font-size: 0.75rem; padding: 6px;">Hapus Seluruh Data Siswa</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LAYAR PERINGATAN KECURANGAN -->
+<div id="cheatOverlay">
+  <div class="siren-icon">&#128680;</div>
+  <h1>KAMU CURANG</h1>
+  <h2>JANGAN ULANGI LAGI</h2>
+  <div class="cheat-count" id="cheatCountText">Pelanggaran ke-1</div>
+  <div class="cheat-extra" id="cheatExtraText"></div>
+  <button class="btn" onclick="resumeGame()">&#9654; Kembali ke Permainan</button>
+</div>
+
+<script>
+  // ============================================================
+  // AUDIO (WEB AUDIO API)
+  // ============================================================
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  let audioCtx = null;
+  let masterGain = null;
+
+  function initAudio() {
+    try {
+      if (!audioCtx) {
+        audioCtx = new AudioCtx();
+        const comp = audioCtx.createDynamicsCompressor();
+        masterGain = audioCtx.createGain();
+        masterGain.gain.value = 1.2;
+        masterGain.connect(comp);
+        comp.connect(audioCtx.destination);
+      }
+      if (audioCtx.state === "suspended") audioCtx.resume();
+    } catch (e) {}
+  }
+
+  // Satu nada pada waktu absolut 'when' ke tujuan 'dest'
+  function note(dest, freq, when, dur, type, vol, endFreq) {
+    try {
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, when);
+      if (endFreq) osc.frequency.exponentialRampToValueAtTime(endFreq, when + dur);
+      g.gain.setValueAtTime(0.0001, when);
+      g.gain.exponentialRampToValueAtTime(vol, when + 0.008);
+      g.gain.exponentialRampToValueAtTime(0.0001, when + dur);
+      osc.connect(g);
+      g.connect(dest);
+      osc.start(when);
+      osc.stop(when + dur + 0.03);
+    } catch (e) {}
+  }
+
+  // Nada terjadwal relatif terhadap sekarang (detik)
+  function tone(freq, start, dur, type, vol, endFreq) {
+    initAudio();
+    if (!audioCtx) return;
+    note(masterGain, freq, audioCtx.currentTime + start, dur, type, vol, endFreq);
+  }
+
+  // Nada terompet/trombone
+  function brass(freq, start, dur, vol, vibrato) {
+    try {
+      initAudio();
+      const t = audioCtx.currentTime + start;
+      const osc = audioCtx.createOscillator();
+      const osc2 = audioCtx.createOscillator();
+      const filter = audioCtx.createBiquadFilter();
+      const gain = audioCtx.createGain();
+      osc.type = "sawtooth";
+      osc2.type = "square";
+      osc.frequency.setValueAtTime(freq, t);
+      osc2.frequency.setValueAtTime(freq * 1.005, t);
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(900, t);
+      filter.frequency.linearRampToValueAtTime(3200, t + Math.min(0.12, dur / 2));
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(vol, t + 0.05);
+      gain.gain.setValueAtTime(vol, t + Math.max(0.06, dur - 0.15));
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      if (vibrato) {
+        const lfo = audioCtx.createOscillator();
+        const lfoGain = audioCtx.createGain();
+        lfo.frequency.value = 5.5;
+        lfoGain.gain.value = freq * 0.018;
+        lfo.connect(lfoGain);
+        lfoGain.connect(osc.frequency);
+        lfoGain.connect(osc2.frequency);
+        lfo.start(t + 0.25);
+        lfo.stop(t + dur + 0.05);
+      }
+      osc.connect(filter);
+      osc2.connect(filter);
+      filter.connect(gain);
+      gain.connect(masterGain);
+      osc.start(t); osc2.start(t);
+      osc.stop(t + dur + 0.05); osc2.stop(t + dur + 0.05);
+    } catch (e) {}
+  }
+
+  // ---------- STATUS SUARA ----------
+  let soundMode = "arcade1";
+  try { soundMode = localStorage.getItem("edugame_sound") || "arcade1"; } catch (e) {}
+  if (!["arcade1", "arcade2", "arcade3", "mute"].includes(soundMode)) soundMode = "arcade1";
+  let musicSession = false;   // true selama permainan berlangsung (sejak tombol Mulai Misi Kuis)
+  let previewTimer = null;
+
+  function isMuted() { return soundMode === "mute"; }
+
+  // ---------- MUSIK LATAR SANTAI (loop terus selama permainan) ----------
+  // Setiap pola: 4 birama x 8 langkah (nada 1/8). Nilai = nomor nada MIDI.
+  const BGM = {
+    arcade1: { // Pixel Chill - C mayor, riang santai
+      bpm: 104, bassWave: "triangle", arpWave: "square", arpVol: 0.08, melWave: "square", melVol: 0.11,
+      prog: [[48, 52, 55], [45, 48, 52], [41, 45, 48], [43, 47, 50]],
+      arp: [0, 1, 2, 1, 0, 1, 2, 1],
+      mel: [76, null, 79, null, 76, null, 74, null,   72, null, 76, null, 72, null, null, null,
+            77, null, 81, null, 77, null, 76, null,   74, null, 79, null, 74, null, null, null]
+    },
+    arcade2: { // Laser Cruise - A minor, melaju tenang
+      bpm: 116, bassWave: "triangle", arpWave: "sawtooth", arpVol: 0.05, melWave: "square", melVol: 0.09,
+      prog: [[45, 48, 52], [41, 45, 48], [48, 52, 55], [43, 47, 50]],
+      arp: [0, 2, 1, 2, 0, 2, 1, 2],
+      mel: [81, null, 76, null, 72, null, 76, null,   77, null, 81, null, 77, null, 72, null,
+            79, null, 76, null, 72, null, 76, null,   74, null, 79, null, 83, null, 79, null]
+    },
+    arcade3: { // Coin Garden - G mayor, lembut seperti denting koin
+      bpm: 92, bassWave: "sine", arpWave: "sine", arpVol: 0.13, melWave: "triangle", melVol: 0.22,
+      prog: [[43, 47, 50], [40, 43, 47], [48, 52, 55], [50, 54, 57]],
+      arp: [null, 0, null, 1, null, 2, null, 1],
+      mel: [79, null, 74, null, 71, null, 74, null,   76, null, 79, null, 76, null, 71, null,
+            76, null, 79, null, 84, null, 79, null,   78, null, 74, null, 81, null, 78, null]
+    }
+  };
+  const bgm = { timer: null, gain: null, step: 0, next: 0, mode: null };
+
+  function mtof(n) { return 440 * Math.pow(2, (n - 69) / 12); }
+
+  function bgmPlayStep(m, step, t, sd) {
+    const bar = Math.floor(step / 8);
+    const s = step % 8;
+    const ch = m.prog[bar];
+    const dest = bgm.gain;
+    if (s === 0 || s === 4) note(dest, mtof(ch[0]), t, sd * 3.6, m.bassWave, 0.42);
+    const ai = m.arp[s];
+    if (ai !== null) note(dest, mtof(ch[ai] + 12), t, sd * 0.9, m.arpWave, m.arpVol);
+    const mel = m.mel[step];
+    if (mel !== null) note(dest, mtof(mel), t, sd * 1.8, m.melWave, m.melVol);
+  }
+
+  function bgmTick() {
+    const m = BGM[bgm.mode];
+    if (!m || !audioCtx || !bgm.gain) return;
+    const sd = 60 / m.bpm / 2;
+    const now = audioCtx.currentTime;
+    if (bgm.next < now - 0.05) bgm.next = now + 0.05;
+    while (bgm.next < now + 0.6) {
+      bgmPlayStep(m, bgm.step, bgm.next, sd);
+      bgm.next += sd;
+      bgm.step = (bgm.step + 1) % 32;
+    }
+  }
+
+  function startBgm(mode, delay) {
+    stopBgm(true);
+    if (!BGM[mode]) return;
+    initAudio();
+    if (!audioCtx) return;
+    bgm.mode = mode;
+    bgm.step = 0;
+    bgm.gain = audioCtx.createGain();
+    bgm.gain.gain.value = 0.55;
+    bgm.gain.connect(masterGain);
+    bgm.next = audioCtx.currentTime + (delay || 0.08);
+    bgm.timer = setInterval(bgmTick, 100);
+    bgmTick();
+  }
+
+  function stopBgm(quick) {
+    clearInterval(bgm.timer);
+    bgm.timer = null;
+    if (bgm.gain && audioCtx) {
+      const g = bgm.gain;
+      try {
+        g.gain.cancelScheduledValues(audioCtx.currentTime);
+        g.gain.setTargetAtTime(0, audioCtx.currentTime, quick ? 0.02 : 0.25);
+        setTimeout(() => { try { g.disconnect(); } catch (e) {} }, quick ? 200 : 1800);
+      } catch (e) {}
+    }
+    bgm.gain = null;
+  }
+
+  // ---------- PANEL SUARA (ikon speaker + dropdown) ----------
+  const ICON_ON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4V5z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 010 7"/><path d="M18.5 5.5a9 9 0 010 13"/></svg>';
+  const ICON_OFF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4V5z" fill="currentColor"/><path d="M16 9l6 6M22 9l-6 6"/></svg>';
+
+  function refreshSoundUI() {
+    document.getElementById("speakerIcon").innerHTML = isMuted() ? ICON_OFF : ICON_ON;
+    document.querySelectorAll(".sound-item").forEach(b => {
+      b.classList.toggle("active", b.dataset.mode === soundMode);
+    });
+  }
+
+  function toggleSoundMenu(e) {
+    if (e) e.stopPropagation();
+    const menu = document.getElementById("soundMenu");
+    const open = !menu.classList.contains("open");
+    menu.classList.toggle("open", open);
+    document.getElementById("speakerBtn").setAttribute("aria-expanded", open ? "true" : "false");
+  }
+
+  function closeSoundMenu() {
+    document.getElementById("soundMenu").classList.remove("open");
+    document.getElementById("speakerBtn").setAttribute("aria-expanded", "false");
+  }
+
+  document.addEventListener("click", e => {
+    if (!e.target.closest("#soundWrap")) closeSoundMenu();
+  });
+
+  function selectSound(mode) {
+    soundMode = mode;
+    try { localStorage.setItem("edugame_sound", mode); } catch (e) {}
+    refreshSoundUI();
+    closeSoundMenu();
+    initAudio();
+    clearTimeout(previewTimer);
+    if (mode === "mute") { stopBgm(); return; }
+    if (musicSession) {
+      if (!cheatLocked) startBgm(mode, 0.1);   // ganti irama tanpa menghentikan permainan
+    } else {
+      startBgm(mode, 0.1);                     // pratinjau singkat di halaman depan
+      previewTimer = setTimeout(() => { if (!musicSession) stopBgm(); }, 6000);
+    }
+  }
+
+  // Jingle arcade keras saat tombol Mulai Misi Kuis ditekan
+  function playArcade(mode) {
+    initAudio();
+    if (mode === "arcade1") {
+      [262, 330, 392, 523, 659, 784, 1047].forEach((f, i) => tone(f, i * 0.09, 0.12, "square", 0.42));
+      tone(1047, 0.66, 0.55, "square", 0.4);
+      tone(784, 0.66, 0.55, "square", 0.32);
+      tone(523, 0.66, 0.55, "square", 0.32);
+    } else if (mode === "arcade2") {
+      for (let i = 0; i < 4; i++) tone(2000, i * 0.15, 0.13, "sawtooth", 0.4, 260);
+      tone(220, 0.65, 0.55, "square", 0.5, 50);
+      tone(1568, 0.75, 0.45, "square", 0.35);
+    } else if (mode === "arcade3") {
+      tone(988, 0, 0.08, "square", 0.42);
+      tone(1319, 0.08, 0.45, "square", 0.42);
+      [523, 659, 784, 1047, 784, 1047, 1319].forEach((f, i) => tone(f, 0.6 + i * 0.08, 0.1, "square", 0.4));
+      tone(1568, 1.2, 0.6, "square", 0.42);
+    }
+  }
+  const BGM_START_DELAY = { arcade1: 1.3, arcade2: 1.4, arcade3: 1.9 };
+
+  // ---------- EFEK JAWABAN ----------
+  // Benar: "kling kling kling kling" (lonceng naik, tegas dan agak panjang)
+  function bell(freq, start, vol, ring) {
+    initAudio();
+    if (!audioCtx) return;
+    const t = audioCtx.currentTime + start;
+    note(masterGain, freq, t, ring, "sine", vol);
+    note(masterGain, freq * 2, t, ring * 0.6, "sine", vol * 0.45);
+    note(masterGain, freq * 3.01, t, ring * 0.35, "triangle", vol * 0.2);
+  }
+  function playSoundCorrect() {
+    if (isMuted()) return;
+    [1046.5, 1318.5, 1568, 2093].forEach((f, i) => bell(f, i * 0.22, 0.4, i === 3 ? 1.1 : 0.7));
+  }
+
+  // Salah: "teng teng teng teng teng" menurun
+  function teng(freq, start, vol) {
+    initAudio();
+    if (!audioCtx) return;
+    const t = audioCtx.currentTime + start;
+    note(masterGain, freq, t, 0.42, "triangle", vol);
+    note(masterGain, freq * 2.01, t, 0.2, "sine", vol * 0.4);
+    note(masterGain, freq, t, 0.28, "square", vol * 0.22);
+  }
+  function playSoundWrong() {
+    if (isMuted()) return;
+    [740, 622, 523, 440, 370].forEach((f, i) => teng(f, i * 0.24, 0.42));
+  }
+
+  // ---------- SIRINE MERAUNG-RAUNG (selalu menyala saat curang) ----------
+  let siren = null;
+  function startSiren() {
+    try {
+      initAudio();
+      if (siren) return;
+      const t0 = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const osc2 = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "sawtooth";
+      osc2.type = "square";
+      osc.frequency.setValueAtTime(600, t0);
+      osc2.frequency.setValueAtTime(300, t0);
+      for (let i = 0; i < 120; i++) {
+        osc.frequency.linearRampToValueAtTime(1350, t0 + i * 1.6 + 0.8);
+        osc.frequency.linearRampToValueAtTime(600, t0 + (i + 1) * 1.6);
+        osc2.frequency.linearRampToValueAtTime(675, t0 + i * 1.6 + 0.8);
+        osc2.frequency.linearRampToValueAtTime(300, t0 + (i + 1) * 1.6);
+      }
+      const g2 = audioCtx.createGain();
+      g2.gain.value = 0.4;
+      gain.gain.value = 0.55;
+      osc.connect(gain);
+      osc2.connect(g2);
+      g2.connect(gain);
+      gain.connect(masterGain);
+      osc.start(t0); osc2.start(t0);
+      siren = { osc, osc2, gain };
+    } catch (e) {}
+  }
+
+  function stopSiren() {
+    if (!siren) return;
+    try {
+      const now = audioCtx.currentTime;
+      siren.gain.gain.setTargetAtTime(0, now, 0.03);
+      siren.osc.stop(now + 0.25);
+      siren.osc2.stop(now + 0.25);
+    } catch (e) {}
+    siren = null;
+  }
+
+  // ---------- FANFARE TEROMPET PANJANG (menang) ----------
+  function playFanfareTrumpet() {
+    if (isMuted()) return;
+    const G4 = 392.00, C5 = 523.25, E5 = 659.25, G5 = 783.99, C6 = 1046.50;
+    brass(G4, 0.00, 0.18, 0.28);
+    brass(C5, 0.20, 0.18, 0.28);
+    brass(E5, 0.40, 0.18, 0.28);
+    brass(G5, 0.60, 0.70, 0.30, true);
+    brass(E5, 1.40, 0.20, 0.28);
+    brass(G5, 1.62, 0.20, 0.28);
+    brass(C6, 1.85, 0.95, 0.30, true);
+    brass(G4, 3.00, 0.18, 0.28);
+    brass(C5, 3.20, 0.18, 0.28);
+    brass(E5, 3.40, 0.18, 0.28);
+    brass(G5, 3.60, 0.30, 0.30);
+    brass(C5, 4.00, 2.2, 0.26, true);
+    brass(E5, 4.00, 2.2, 0.24, true);
+    brass(G5, 4.00, 2.2, 0.24, true);
+    brass(C6, 4.00, 2.2, 0.30, true);
+  }
+
+  // ---------- SUARA PANJANG "JANGAN PUTUS ASA" ----------
+  function playSoundTryAgain() {
+    if (isMuted()) return;
+    brass(392.00, 0.00, 0.55, 0.30);
+    brass(369.99, 0.60, 0.55, 0.30);
+    brass(349.23, 1.20, 0.55, 0.30);
+    brass(329.63, 1.80, 2.0, 0.32, true);
+  }
+
+  // ============================================================
+  // 80 SOAL SEJARAH BAWAAN (jawaban benar di indeks 0, diacak saat permainan)
+  // Materi: menjelang Proklamasi s.d. mempertahankan kemerdekaan (1950)
+  // ============================================================
+  const defaultBankQuestions = [
+    { q: "Tokoh yang mengetik teks Proklamasi Kemerdekaan Indonesia adalah...", o: ["Sayuti Melik", "Sukarni", "B.M. Diah", "Wikana", "Chaerul Saleh"], a: 0 },
+    { q: "Pertempuran Lima Hari terjadi di kota...", o: ["Semarang", "Surabaya", "Bandung", "Medan", "Yogyakarta"], a: 0 },
+    { q: "Insiden bendera di Hotel Yamato terjadi di kota...", o: ["Surabaya", "Semarang", "Jakarta", "Bandung", "Malang"], a: 0 },
+    { q: "Peristiwa 'Bandung Lautan Api' (Maret 1946) terjadi sebagai tanggapan atas...", o: ["Ultimatum Sekutu agar pasukan Indonesia mengosongkan Bandung selatan", "Agresi Militer Belanda I", "Pembentukan Negara Pasundan", "Hasil Perundingan Linggajati", "Pertempuran 10 November di Surabaya"], a: 0 },
+    { q: "Pemimpin pertempuran Ambarawa yang gugur mendahului Kolonel Soedirman adalah...", o: ["Letkol Isdiman", "Slamet Riyadi", "Ahmad Yani", "Gatot Soebroto", "Urip Sumoharjo"], a: 0 },
+    { q: "Hari Pahlawan 10 November diperingati untuk mengenang pertempuran heroik di...", o: ["Surabaya", "Ambarawa", "Medan", "Semarang", "Bali"], a: 0 },
+    { q: "Tokoh pengobar semangat pemuda Surabaya lewat pidato radio yang berapi-api adalah...", o: ["Bung Tomo", "Bung Hatta", "Bung Karno", "K.H. Hasyim Asy'ari", "Soeprijadi"], a: 0 },
+    { q: "Pertempuran Puputan Margarana di Bali dipimpin oleh...", o: ["I Gusti Ngurah Rai", "I Gusti Ketut Jelantik", "Ida Bagus Mantra", "Anak Agung Pandji Tisna", "Udayana"], a: 0 },
+    { q: "Pertempuran Medan Area dipicu oleh tindakan Sekutu yang memasang lencana...", o: ["Fixed Boundaries Medan Area", "Great Britain Rule", "NICA Territory", "Allied Security Zone", "Peacekeeper Border"], a: 0 },
+    { q: "Perjanjian Linggajati secara resmi ditandatangani di Jakarta pada tahun...", o: ["1947", "1945", "1946", "1948", "1949"], a: 0 },
+    { q: "Delegasi Indonesia dalam Perundingan Linggajati dipimpin oleh...", o: ["Sutan Sjahrir", "Amir Sjarifuddin", "Mohammad Hatta", "Mohammad Roem", "Soepomo"], a: 0 },
+    { q: "Dalam Perjanjian Linggajati, Belanda hanya mengakui wilayah de facto RI atas...", o: ["Jawa, Sumatera, dan Madura", "Jawa dan Madura", "Sumatera dan Kalimantan", "Jawa, Bali, dan Nusa Tenggara", "Seluruh Nusantara"], a: 0 },
+    { q: "Agresi Militer Belanda I dilancarkan pada tanggal...", o: ["21 Juli 1947", "19 Desember 1948", "10 November 1945", "17 Agustus 1947", "1 Maret 1949"], a: 0 },
+    { q: "Komisi Tiga Negara (KTN) dibentuk PBB sebagai penengah konflik. Negara yang dipilih Indonesia adalah...", o: ["Australia", "Belgia", "Amerika Serikat", "Inggris", "India"], a: 0 },
+    { q: "Negara yang ditunjuk Belanda dalam KTN adalah...", o: ["Belgia", "Australia", "Prancis", "Kanada", "Inggris"], a: 0 },
+    { q: "Negara netral penengah yang dipilih bersama oleh Indonesia dan Belanda dalam KTN adalah...", o: ["Amerika Serikat", "Australia", "Belgia", "Uni Soviet", "Mesir"], a: 0 },
+    { q: "Perjanjian Renville ditandatangani di atas kapal perang milik negara...", o: ["Amerika Serikat", "Inggris", "Uni Soviet", "Belanda", "Australia"], a: 0 },
+    { q: "Pemimpin delegasi Indonesia pada Perjanjian Renville adalah...", o: ["Amir Sjarifuddin", "Sutan Sjahrir", "Mohammad Hatta", "Agus Salim", "Sri Sultan Hamengkubuwono IX"], a: 0 },
+    { q: "Garis batas khayal pemisah wilayah pertahanan dalam Perjanjian Renville dikenal sebagai...", o: ["Garis Van Mook", "Garis Curzon", "Garis Linggajati", "Garis Demarkasi Sekutu", "Garis Khatulistiwa"], a: 0 },
+    { q: "Dampak buruk Perjanjian Renville bagi militer Indonesia adalah...", o: ["Pasukan TNI harus hijrah dari kantong gerilya", "TNI dibubarkan Sekutu", "Belanda menguasai PBB", "Ibukota diserahkan ke NICA", "Senjata disita Inggris"], a: 0 },
+    { q: "Agresi Militer Belanda II terjadi pada tanggal 19 Desember 1948 dengan menyerang ibukota RI saat itu, yaitu...", o: ["Yogyakarta", "Bukittinggi", "Jakarta", "Bandung", "Surakarta"], a: 0 },
+    { q: "Pemerintah Darurat Republik Indonesia (PDRI) didirikan di Bukittinggi yang dipimpin oleh...", o: ["Sjafruddin Prawiranegara", "Mohammad Natsir", "Assaat", "Sukiman", "Wilopo"], a: 0 },
+    { q: "Jenderal yang memimpin perang gerilya secara gigih dalam Agresi Militer Belanda II adalah...", o: ["Jenderal Soedirman", "Jenderal Ahmad Yani", "Letkol Soeharto", "TB Simatupang", "Abdul Haris Nasution"], a: 0 },
+    { q: "Serangan Umum 1 Maret 1949 di Yogyakarta membuktikan bahwa...", o: ["TNI dan Republik Indonesia masih eksis dan kuat", "Belanda berhasil menumpas TNI", "Sekutu memihak penuh Indonesia", "PDRI dibubarkan", "Yogyakarta diserahkan ke NICA"], a: 0 },
+    { q: "Pemimpin lapangan Serangan Umum 1 Maret 1949 adalah...", o: ["Letkol Soeharto", "Kolonel Bambang Sugeng", "Sri Sultan HB IX", "Jenderal Soedirman", "Urip Sumoharjo"], a: 0 },
+    { q: "Perjanjian Roem-Royen diselenggarakan pada tahun...", o: ["1949", "1948", "1947", "1946", "1950"], a: 0 },
+    { q: "Salah satu hasil penting Perjanjian Roem-Royen bagi kepemimpinan RI adalah...", o: ["Pengembalian pemerintah RI ke Yogyakarta", "Penyerahan Papua Barat", "Pembentukan RIS seketika", "Pembubaran TNI", "Pengakuan de facto Jawa-Madura"], a: 0 },
+    { q: "Konferensi Meja Bundar (KMB) diselenggarakan di kota...", o: ["Den Haag", "Amsterdam", "Rotterdam", "Batavia", "Utrecht"], a: 0 },
+    { q: "Ketua delegasi Indonesia dalam Konferensi Meja Bundar (KMB) adalah...", o: ["Drs. Mohammad Hatta", "Mr. Mohammad Roem", "Sutan Sjahrir", "Sjafruddin Prawiranegara", "Ali Sastroamidjojo"], a: 0 },
+    { q: "Hasil pokok KMB adalah penyerahan kedaulatan dari Belanda kepada...", o: ["Republik Indonesia Serikat (RIS)", "NKRI", "Negara Pasundan", "Uni Indonesia-Belanda", "PDRI"], a: 0 },
+    { q: "Masalah wilayah yang ditunda dan diselesaikan setahun setelah KMB adalah...", o: ["Irian Barat (Papua)", "Timor Timur", "Kepulauan Maluku", "Kalimantan Barat", "Bangka Belitung"], a: 0 },
+    { q: "Negara Timur Besar dan Negara Madura adalah contoh negara boneka bentukan...", o: ["Van Mook", "Spook", "Ter Poorten", "De Klerk", "Mallaby"], a: 0 },
+    { q: "Peristiwa penyerahan kedaulatan hasil KMB berlangsung pada tanggal...", o: ["27 Desember 1949", "17 Agustus 1949", "19 Desember 1949", "1 Januari 1950", "10 November 1949"], a: 0 },
+    { q: "Bentuk negara serikat (RIS) akhirnya kembali menjadi NKRI pada tanggal...", o: ["17 Agustus 1950", "27 Desember 1950", "1 Juni 1950", "5 Juli 1959", "20 Mei 1950"], a: 0 },
+    { q: "Resolusi Dewan Keamanan PBB yang memaksa Belanda menghentikan Agresi II dikeluarkan karena desakan negara...", o: ["India dan Australia", "Rusia dan Cina", "Inggris dan Prancis", "Belgia dan Belanda", "Jepang dan Jerman"], a: 0 },
+    { q: "Pemimpin pasukan Sekutu (Inggris) yang tewas dalam pertempuran di Surabaya adalah...", o: ["Brigjen A.W.S. Mallaby", "Jenderal Christison", "Mayor Jenderal Mansergh", "Lord Killearn", "Van Mook"], a: 0 },
+    { q: "Konferensi Antar-Indonesia sebelum KMB diadakan untuk menyatukan visi antara RI dengan...", o: ["BFO (Bijeenkomst voor Federaal Overleg)", "NICA", "Sekutu", "KNIL", "PDRI"], a: 0 },
+    { q: "Taktik perang yang diterapkan Jenderal Soedirman saat melawan Agresi Militer Belanda II adalah...", o: ["Perang Gerilya", "Supit Urang", "Blitzkrieg", "Perang Parit", "Benteng Stelsel"], a: 0 },
+    { q: "Lagu 'Halo, Halo Bandung' diciptakan untuk mengenang peristiwa...", o: ["Bandung Lautan Api", "Pertempuran Lengkong", "Konferensi Asia Afrika", "Perjanjian Linggajati", "Agresi Belanda I"], a: 0 },
+    { q: "Markas Komando PDRI di Sumatera Barat berpindah-pindah dipimpin oleh...", o: ["Mr. Sjafruddin Prawiranegara", "Teuku Umar", "Tan Malaka", "Daud Beureueh", "Haji Agus Salim"], a: 0 },
+    { q: "Pemuda yang gugur setelah meledakkan gudang mesiu Sekutu di Dayeuhkolot, Bandung, adalah...", o: ["Mohammad Toha", "Bung Tomo", "Daan Mogot", "Karel Satsuit Tubun", "Robert Wolter Monginsidi"], a: 0 },
+    { q: "Pahlawan muda asal Manado yang gugur membela kemerdekaan di Sulawesi Selatan adalah...", o: ["Robert Wolter Monginsidi", "Arie Lasut", "Sam Ratulangi", "Alexander Andries Maramis", "John Lie"], a: 0 },
+    { q: "Diplomat ulung Indonesia yang mahir banyak bahasa dan dikenal berpakaian sederhana adalah...", o: ["Haji Agus Salim", "Mr. Soepomo", "Achmad Soebardjo", "Lambertus Nicodemus Palar", "Dr. Leimena"], a: 0 },
+    { q: "Wakil Indonesia pertama di Perserikatan Bangsa-Bangsa (PBB) adalah...", o: ["L.N. Palar", "Mohammad Roem", "Sutan Sjahrir", "Ali Sastroamidjojo", "Adam Malik"], a: 0 },
+    { q: "Ulama kharismatik yang mengeluarkan 'Fatwa Resolusi Jihad' pada 22 Oktober 1945 adalah...", o: ["K.H. Hasyim Asy'ari", "K.H. Ahmad Dahlan", "K.H. Wahid Hasyim", "K.H. Mas Mansyur", "K.H. Agus Salim"], a: 0 },
+    { q: "Makna penting perjuangan mempertahankan kemerdekaan secara bersenjata dan diplomasi adalah...", o: ["Menegakkan kedaulatan bangsa Indonesia yang berdaulat", "Memperluas kekuasaan militer", "Menuntut ganti rugi kepada Sekutu", "Mengambil alih seluruh aset asing", "Mengisolasi diri dari bangsa lain"], a: 0 },
+    { q: "Organisasi bentukan Sekutu yang bertugas memulangkan tawanan perang Jepang di Indonesia adalah...", o: ["RAPWI", "AFNEI", "SEAC", "NICA", "UNCI"], a: 0 },
+    { q: "Pasukan Sekutu yang mendarat di Indonesia tergabung dalam komando...", o: ["AFNEI", "SEATO", "NATO", "ANZUS", "SWPA"], a: 0 },
+    { q: "Panglima tentara Sekutu AFNEI yang bertugas di Indonesia adalah...", o: ["Letjen Sir Philip Christison", "Lord Mountbatten", "Jenderal Douglas MacArthur", "Letkol D.C. Hawthorne", "Jenderal Terauchi"], a: 0 },
+
+    // ---------- 31 SOAL TAMBAHAN: menjelang Proklamasi hingga awal kemerdekaan ----------
+    { q: "Ketua BPUPKI (Dokuritsu Junbi Cosakai) yang dibentuk Jepang pada 1945 adalah...", o: ["dr. K.R.T. Radjiman Wedyodiningrat", "Ir. Soekarno", "Drs. Mohammad Hatta", "Prof. Dr. Soepomo", "Ki Hajar Dewantara"], a: 0 },
+    { q: "Janji kemerdekaan 'di kemudian hari' bagi Indonesia diumumkan pada 7 September 1944 oleh Perdana Menteri Jepang, yaitu...", o: ["Kuniaki Koiso", "Hideki Tojo", "Hisaichi Terauchi", "Hitoshi Imamura", "Tadashi Maeda"], a: 0 },
+    { q: "Dalam sidang pertama BPUPKI, tokoh yang pertama kali mengemukakan gagasan dasar negara pada 29 Mei 1945 adalah...", o: ["Mohammad Yamin", "Soepomo", "Ir. Soekarno", "Mohammad Hatta", "Agus Salim"], a: 0 },
+    { q: "Ir. Soekarno menyampaikan pidato tentang lima dasar negara yang kemudian disebut Pancasila pada tanggal...", o: ["1 Juni 1945", "29 Mei 1945", "31 Mei 1945", "22 Juni 1945", "18 Agustus 1945"], a: 0 },
+    { q: "Panitia Sembilan yang merumuskan Piagam Jakarta (22 Juni 1945) diketuai oleh...", o: ["Ir. Soekarno", "Mohammad Hatta", "Mohammad Yamin", "Achmad Soebardjo", "K.H. Wahid Hasjim"], a: 0 },
+    { q: "Soekarno, Mohammad Hatta, dan dr. Radjiman bertemu Marsekal Terauchi pada Agustus 1945 di kota...", o: ["Dalat (Vietnam)", "Saigon (Vietnam)", "Tokyo (Jepang)", "Singapura", "Manila (Filipina)"], a: 0 },
+    { q: "Peristiwa yang mempercepat menyerahnya Jepang kepada Sekutu pada Agustus 1945 adalah...", o: ["Dijatuhkannya bom atom di Hiroshima dan Nagasaki", "Penyerbuan Jepang ke Pearl Harbor", "Kekalahan Jepang di Pertempuran Midway", "Pembebasan Filipina oleh Sekutu", "Pendaratan Sekutu di Normandia"], a: 0 },
+    { q: "Golongan muda 'mengamankan' Soekarno-Hatta ke Rengasdengklok pada tanggal...", o: ["16 Agustus 1945", "15 Agustus 1945", "17 Agustus 1945", "18 Agustus 1945", "14 Agustus 1945"], a: 0 },
+    { q: "Tokoh golongan muda yang terlibat membawa Soekarno-Hatta ke Rengasdengklok adalah...", o: ["Sukarni, Wikana, dan Chaerul Saleh", "Achmad Soebardjo, Soepomo, dan Radjiman", "Sayuti Melik, Sutan Sjahrir, dan Ki Hajar Dewantara", "Mohammad Yamin, Agus Salim, dan Wahid Hasjim", "Latief Hendraningrat, Soehoed, dan Fatmawati"], a: 0 },
+    { q: "Tujuan utama golongan muda membawa Soekarno-Hatta ke Rengasdengklok adalah...", o: ["Menjauhkan mereka dari pengaruh Jepang dan mendesak agar proklamasi segera dilaksanakan", "Menyerahkan keduanya kepada tentara Sekutu", "Menunda proklamasi sampai ada izin dari Jepang", "Menyusun naskah proklamasi di markas PETA", "Menghindarkan mereka dari serangan Belanda"], a: 0 },
+    { q: "Tokoh golongan tua yang menjemput Soekarno-Hatta dari Rengasdengklok dengan jaminan proklamasi diumumkan paling lambat 17 Agustus 1945 adalah...", o: ["Achmad Soebardjo", "Sayuti Melik", "Sukarni", "Wikana", "Sutan Sjahrir"], a: 0 },
+    { q: "Naskah teks Proklamasi dirumuskan pada dini hari 17 Agustus 1945 di rumah perwira angkatan laut Jepang yang bersimpati kepada Indonesia, yaitu...", o: ["Laksamana Tadashi Maeda", "Marsekal Hisaichi Terauchi", "Letjen Nishimura", "Letjen Yamamoto", "Jenderal Hitoshi Imamura"], a: 0 },
+    { q: "Konsep (draf) teks Proklamasi ditulis tangan oleh...", o: ["Ir. Soekarno", "Sayuti Melik", "Mohammad Hatta", "Achmad Soebardjo", "Sukarni"], a: 0 },
+    { q: "Pada naskah proklamasi yang diketik, frasa 'Wakil-wakil bangsa Indonesia' diganti menjadi...", o: ["Atas nama bangsa Indonesia", "Rakyat Indonesia", "Pemimpin bangsa Indonesia", "Panitia Persiapan Kemerdekaan", "Bangsa Indonesia merdeka"], a: 0 },
+    { q: "Teks Proklamasi dibacakan di rumah Ir. Soekarno yang beralamat di...", o: ["Jalan Pegangsaan Timur No. 56, Jakarta", "Jalan Imam Bonjol No. 1, Jakarta", "Lapangan Ikada, Jakarta", "Rengasdengklok, Karawang", "Gedung Chuo Sangi In, Jakarta"], a: 0 },
+    { q: "Proklamasi Kemerdekaan Indonesia dibacakan pada 17 Agustus 1945 sekitar pukul...", o: ["10.00 pagi", "08.00 pagi", "12.00 siang", "05.00 subuh", "17.00 sore"], a: 0 },
+    { q: "Bendera Sang Saka Merah Putih yang dikibarkan saat Proklamasi dijahit oleh...", o: ["Ibu Fatmawati", "Ibu Rachmi Hatta", "Ibu Maria Ulfah", "Ibu Lasmidjah Hardi", "Ibu S.K. Trimurti"], a: 0 },
+    { q: "Pengibar bendera Merah Putih pada upacara Proklamasi 17 Agustus 1945 adalah...", o: ["Latief Hendraningrat dan Soehoed", "Sukarni dan Wikana", "Sayuti Melik dan Moh. Hatta", "Singgih dan Chaerul Saleh", "Daan Mogot dan Soepriyadi"], a: 0 },
+    { q: "Hasil penting sidang PPKI pada 18 Agustus 1945 adalah...", o: ["Mengesahkan UUD 1945 serta memilih Soekarno dan Hatta sebagai presiden dan wakil presiden", "Membentuk Republik Indonesia Serikat", "Menyetujui Perjanjian Linggajati", "Menetapkan Piagam Jakarta sebagai pembukaan UUD", "Membubarkan BPUPKI dan PETA"], a: 0 },
+    { q: "Rumusan sila pertama Piagam Jakarta diubah menjadi 'Ketuhanan Yang Maha Esa' pada sidang PPKI 18 Agustus 1945 atas usul...", o: ["Mohammad Hatta", "Ir. Soekarno", "Soepomo", "Mohammad Yamin", "Ki Bagus Hadikusumo"], a: 0 },
+    { q: "Sebelum MPR dan DPR terbentuk, KNIP memperoleh kekuasaan legislatif melalui...", o: ["Maklumat Wakil Presiden No. X (16 Oktober 1945)", "Maklumat Pemerintah 3 November 1945", "Dekrit Presiden 5 Juli 1959", "Perjanjian Linggajati", "Piagam Jakarta"], a: 0 },
+    { q: "Maklumat Pemerintah tanggal 3 November 1945 berisi anjuran untuk...", o: ["Mendirikan partai-partai politik", "Membentuk Tentara Keamanan Rakyat", "Mengumumkan keadaan darurat perang", "Menutup seluruh partai politik", "Memindahkan ibu kota ke Yogyakarta"], a: 0 },
+    { q: "Pada 5 Oktober 1945 Badan Keamanan Rakyat (BKR) diubah menjadi...", o: ["Tentara Keamanan Rakyat (TKR)", "Tentara Rakyat Indonesia (TRI)", "Tentara Nasional Indonesia (TNI)", "Pembela Tanah Air (PETA)", "Angkatan Perang Republik Indonesia (APRI)"], a: 0 },
+    { q: "Rapat raksasa di Lapangan Ikada, Jakarta, pada 19 September 1945 bertujuan untuk...", o: ["Menunjukkan dukungan rakyat terhadap Proklamasi dan pemerintah Republik Indonesia", "Mengumumkan Proklamasi untuk pertama kali", "Memilih presiden dan wakil presiden", "Mengesahkan UUD 1945", "Menyatakan perang kepada Sekutu"], a: 0 },
+    { q: "Ultimatum 9 November 1945 yang menuntut rakyat Surabaya menyerahkan senjata dikeluarkan oleh pimpinan pasukan Inggris, yaitu...", o: ["Mayor Jenderal E.C. Mansergh", "Brigjen A.W.S. Mallaby", "Letjen Sir Philip Christison", "Lord Mountbatten", "Letkol D.C. Hawthorne"], a: 0 },
+    { q: "Pertempuran Ambarawa berakhir pada 15 Desember 1945; tanggal tersebut kini diperingati sebagai...", o: ["Hari Juang Kartika (TNI AD)", "Hari Pahlawan", "Hari Kesaktian Pancasila", "Hari Sumpah Pemuda", "Hari Bela Negara"], a: 0 },
+    { q: "Pemberontakan PKI di Madiun pada September 1948 dipimpin oleh...", o: ["Muso", "D.N. Aidit", "S.M. Kartosuwiryo", "Tan Malaka", "Raymond Westerling"], a: 0 },
+    { q: "Pemberontakan APRA (Angkatan Perang Ratu Adil) di Bandung pada Januari 1950 dipimpin oleh...", o: ["Kapten Raymond Westerling", "Sultan Hamid II", "Andi Azis", "Dr. Soumokil", "S.M. Kartosuwiryo"], a: 0 },
+    { q: "Daan Mogot gugur pada 25 Januari 1946 ketika melucuti senjata tentara Jepang dalam pertempuran di...", o: ["Lengkong, Tangerang", "Ambarawa, Semarang", "Dayeuhkolot, Bandung", "Ciputat, Banten", "Cirebon, Jawa Barat"], a: 0 },
+    { q: "Dokter yang gugur karena isu peracunan air minum menjelang Pertempuran Lima Hari di Semarang adalah...", o: ["dr. Kariadi", "dr. Soetomo", "dr. Wahidin Soedirohoesodo", "dr. Cipto Mangunkusumo", "dr. Radjiman"], a: 0 },
+    { q: "Setelah Agresi Militer Belanda II (Desember 1948), Soekarno, Hatta, dan sejumlah pemimpin RI diasingkan Belanda ke...", o: ["Pulau Bangka", "Boven Digoel", "Banda Neira", "Ende, Flores", "Bengkulu"], a: 0 }
+  ];
+
+  // ============================================================
+  // 50 KARTU RENUNGAN (muncul satu kali, acak, sebelum permainan)
+  // ============================================================
+  const reflections = [
+    "Perjuangan para pahlawan tidak dimulai dari kemudahan. Jika hari ini belajar terasa berat, ingatlah bahwa kamu sedang menyiapkan diri untuk menjaga apa yang telah mereka wariskan.",
+    "Kejujuran adalah kemerdekaan yang paling sunyi. Nilai yang diraih dengan jujur mungkin kecil, tetapi ia milikmu seutuhnya dan tidak akan pernah membuatmu menunduk.",
+    "Orang tuamu mungkin jarang berkata lelah, tetapi setiap pagi mereka berangkat dengan namamu di dalam doa. Belajarlah hari ini sebagai caramu mengucapkan terima kasih.",
+    "Kegagalan bukan akhir cerita. Bangsa ini pun jatuh berkali-kali sebelum berdiri merdeka. Bangkitlah sekali lagi, kamu lebih kuat dari yang kamu kira.",
+    "Tidak ada yang tahu betapa keras kamu berusaha selain dirimu sendiri dan Tuhan. Teruslah berjalan, sebab usaha yang tulus tidak pernah sia-sia.",
+    "Guru yang menegurmu hari ini sedang menanam harapan agar kelak kamu tidak tersesat. Hargai setiap nasihat, sekalipun terasa pahit di telinga.",
+    "Sejarah bukan sekadar hafalan tanggal. Ia adalah cermin yang mengingatkan kita dari mana kita berasal dan ke mana kita harus melangkah.",
+    "Mereka yang merebut kemerdekaan itu pun masih muda. Usiamu hari ini adalah modal terbaik untuk membuktikan bahwa generasimu pantas dipercaya.",
+    "Satu soal yang kamu jawab dengan jujur lebih berharga daripada seratus jawaban yang kamu peroleh dengan cara curang.",
+    "Jangan membandingkan langkahmu dengan langkah orang lain. Setiap orang punya waktunya sendiri untuk bersinar, dan waktumu sedang dipersiapkan.",
+    "Lelah itu wajar, menyerah itu pilihan. Istirahatlah sebentar bila perlu, tetapi jangan pernah berhenti dari mimpi yang kamu yakini.",
+    "Di balik setiap kemerdekaan ada air mata ibu yang melepas anaknya berjuang. Kenanglah, dan jadilah anak yang membuat ibumu bangga.",
+    "Ilmu yang kamu pelajari hari ini mungkin terasa tak berguna, tetapi suatu hari ia akan menjadi jembatan yang menyelamatkanmu.",
+    "Keberanian bukan berarti tidak takut. Keberanian adalah tetap mencoba meski kamu takut salah. Jawablah dengan percaya diri.",
+    "Jangan malu bertanya dan jangan malu salah. Orang besar dibentuk oleh kesalahan yang ia berani akui dan perbaiki.",
+    "Bersyukurlah kamu bisa duduk belajar dengan aman. Banyak anak di masa lalu belajar sambil mendengar dentuman perang.",
+    "Hari ini kamu bukan hanya mengerjakan kuis. Kamu sedang melatih karakter: sabar, teliti, dan jujur. Itulah bekal yang sesungguhnya.",
+    "Sebesar apa pun mimpimu, ia dimulai dari langkah kecil yang kamu ambil sekarang. Mulailah, dan Tuhan akan membukakan jalannya.",
+    "Pahlawan sejati tidak selalu berdiri di medan perang. Kadang ia adalah siswa yang memilih jujur ketika tidak ada seorang pun yang melihat.",
+    "Jangan biarkan kata-kata orang yang meremehkanmu menjadi suara di kepalamu. Biarkan hasil kerja kerasmu yang menjawab mereka.",
+    "Doa ibumu, jerih payah ayahmu, dan kesabaran gurumu sedang menuntunmu hari ini. Jangan sia-siakan mereka.",
+    "Kemerdekaan harus diisi dengan kejujuran, ilmu, dan akhlak. Tanpa itu, kita hanya merdeka di atas kertas.",
+    "Waktu tidak bisa diulang, tetapi kesempatan untuk berubah selalu ada. Mulailah dari detik ini, bukan dari esok hari.",
+    "Bila hasilmu belum seperti yang diharapkan, jangan benci dirimu. Pelajari, perbaiki, dan coba lagi dengan hati yang lebih lapang.",
+    "Rendah hati adalah ciri orang berilmu. Semakin banyak kamu belajar, semakin kamu sadar betapa luasnya yang belum kamu ketahui.",
+    "Para pejuang rela mengorbankan banyak hal agar kita bisa belajar dengan bebas. Balaslah dengan belajar sungguh-sungguh.",
+    "Kamu tidak harus sempurna. Kamu hanya perlu bersungguh-sungguh. Tuhan melihat usaha, bukan hanya hasil akhir.",
+    "Sahabat sejati adalah yang mengajakmu belajar, bukan yang mengajakmu berbuat curang. Pilihlah teman yang menumbuhkanmu.",
+    "Satu nasihat sederhana: lakukan yang benar meski tidak ada yang melihat. Di situlah sesungguhnya kamu membangun harga dirimu.",
+    "Jangan takut bermimpi tinggi. Bangsa yang dulu terjajah kini bisa berdiri tegak karena ada orang-orang yang berani bermimpi.",
+    "Ketika ragu, tarik napas dalam-dalam, baca soal dengan tenang, lalu jawab dengan keyakinan. Kamu sudah belajar lebih banyak dari yang kamu sadari.",
+    "Tidak ada kerja keras yang mengkhianati hasil. Mungkin tidak hari ini, tetapi ia pasti datang pada waktu yang tepat.",
+    "Hormatilah gurumu seperti kamu menghormati orang tuamu. Dari merekalah pintu-pintu pengetahuan terbuka untukmu.",
+    "Setiap kali kamu ingin menyerah, ingatlah alasan pertama kamu memulai. Alasan itu masih layak diperjuangkan.",
+    "Indonesia membutuhkan generasi yang cerdas, jujur, dan berani. Dan kamu, yang sedang membaca ini, adalah bagian dari harapan itu.",
+    "Nilai yang rendah bisa diperbaiki, tetapi kejujuran yang sudah dinodai sulit dikembalikan. Jagalah selalu yang paling berharga.",
+    "Belajar sejarah berarti belajar berterima kasih. Hari ini, ucapkan terima kasih dalam hati kepada mereka yang telah berjuang untukmu.",
+    "Kamu lahir dengan potensi yang tidak dimiliki orang lain. Jangan kubur ia dalam rasa malas dan rasa takut.",
+    "Jangan menunggu sempurna untuk memulai. Para pejuang kemerdekaan pun memulai dengan apa yang mereka punya, lalu terus melangkah.",
+    "Ada hari-hari ketika semuanya terasa sulit. Itu bukan tanda kamu lemah, itu tanda kamu sedang bertumbuh.",
+    "Bersikaplah adil pada dirimu sendiri: berusaha sungguh-sungguh, lalu ikhlas menerima hasilnya. Ketenangan datang dari situ.",
+    "Kepercayaan itu seperti kaca. Sekali retak sulit diperbaiki. Jagalah kepercayaan guru dan orang tuamu dengan perbuatan yang jujur.",
+    "Hidup ini seperti perjalanan panjang mempertahankan kemerdekaan: kadang menang, kadang mundur, tetapi tidak pernah berhenti berjuang.",
+    "Senyum ibumu saat melihat hasil belajarmu adalah hadiah terindah. Kejar senyum itu dengan kerja keras yang jujur.",
+    "Jadilah pribadi yang bisa dipercaya, sebab kepercayaan akan membawamu lebih jauh daripada kepintaran semata.",
+    "Orang yang hebat bukan yang tidak pernah salah, tetapi yang selalu bangkit setelah salah. Teruslah bangkit.",
+    "Percayalah, ada doa-doa yang diam-diam menyebut namamu. Jangan kecewakan mereka, dan jangan kecewakan dirimu sendiri.",
+    "Hari ini kamu bukan sedang bersaing dengan teman. Kamu sedang melampaui dirimu yang kemarin. Itu sudah cukup membanggakan.",
+    "Bila kamu telah berusaha dan berdoa, serahkan hasilnya dengan tenang. Tuhan Maha Mengetahui kadar usahamu.",
+    "Mulailah dengan basmalah di hati, kerjakan dengan jujur dan tenang. Semoga hari ini menjadi langkah awal keberhasilanmu."
+  ];
+  let reflectTimer = null;
+
+  // ============================================================
+  // STATE DAN DATA PERSISTEN
+  // (kunci _v2 agar bank soal 80 soal baru langsung terpakai)
+  // ============================================================
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+  function loadQuestions() {
+    try {
+      const saved = JSON.parse(localStorage.getItem("edugame_questions_v2"));
+      if (Array.isArray(saved) && saved.length > 0) return saved;
+    } catch (e) {}
+    return defaultBankQuestions;
+  }
+  function loadRecords() {
+    try {
+      const saved = JSON.parse(localStorage.getItem("edugame_records"));
+      if (Array.isArray(saved)) return saved;
+    } catch (e) {}
+    return [];
+  }
+
+  let activeQuestions = loadQuestions();
+  let activeToken = lsGet("edugame_token") || "SEJARAH45";
+  let isGameOpen = lsGet("edugame_is_open") !== "false";
+  let studentRecords = loadRecords();
+  let quizMinutes = parseInt(lsGet("edugame_duration"), 10);
+  if (![25, 45, 60].includes(quizMinutes)) quizMinutes = 45;
+
+  const PASS_SCORE = 81;           // nilai 81 ke atas = KAMU BERHASIL
+  const FEEDBACK_MS = 2000;        // lama umpan balik jawaban sebelum soal berikutnya
+
+  let randomizedQuestions = [];
+  let currentIdx = 0;
+  let userScore = 0;
+  let correctCount = 0;
+  let cheatWarnings = 0;
+  let timerInterval = null;
+  let timeLeft = quizMinutes * 60;
+  let overtime = false;
+  let currentStudent = { absen: '', name: '', kls: '' };
+  let quizActive = false;
+  let cheatLocked = false;
+  let answered = false;
+  let sessionId = 0;
+
+  // ============================================================
+  // SINKRONISASI SERVER (Netlify Functions + Blobs)
+  // Bila server tidak ada (hosting statis / dibuka dari berkas), otomatis mode lokal.
+  // ============================================================
+  const API = "/api";
+  let online = false;
+  let backendExpected = location.protocol === "http:" || location.protocol === "https:";
+  let teacherPass = "";
+  let pendingTimer = null;
+
+  // SHA-256 murni JS (agar sandi guru tidak tertulis polos di kode mode lokal)
+  function sha256(str) {
+    const bytes = Array.from(new TextEncoder().encode(str));
+    const frac = x => ((x - Math.floor(x)) * 4294967296) | 0;
+    const K = [], H = [];
+    for (let n = 2, c = 0; c < 64; n++) {
+      let p = true;
+      for (let d = 2; d * d <= n; d++) if (n % d === 0) { p = false; break; }
+      if (p) { if (c < 8) H.push(frac(Math.sqrt(n))); K.push(frac(Math.cbrt(n))); c++; }
+    }
+    const l = bytes.length * 8;
+    bytes.push(0x80);
+    while (bytes.length % 64 !== 56) bytes.push(0);
+    for (let i = 7; i >= 0; i--) bytes.push(i >= 4 ? 0 : (l >>> (i * 8)) & 255);
+    const rotr = (x, n) => (x >>> n) | (x << (32 - n));
+    for (let o = 0; o < bytes.length; o += 64) {
+      const w = [];
+      for (let i = 0; i < 16; i++) w[i] = (bytes[o + i * 4] << 24) | (bytes[o + i * 4 + 1] << 16) | (bytes[o + i * 4 + 2] << 8) | bytes[o + i * 4 + 3];
+      for (let i = 16; i < 64; i++) {
+        const s0 = rotr(w[i - 15], 7) ^ rotr(w[i - 15], 18) ^ (w[i - 15] >>> 3);
+        const s1 = rotr(w[i - 2], 17) ^ rotr(w[i - 2], 19) ^ (w[i - 2] >>> 10);
+        w[i] = (w[i - 16] + s0 + w[i - 7] + s1) | 0;
+      }
+      let [a, b, c, d, e, f, g, h] = H;
+      for (let i = 0; i < 64; i++) {
+        const S1 = rotr(e, 6) ^ rotr(e, 11) ^ rotr(e, 25);
+        const ch = (e & f) ^ (~e & g);
+        const t1 = (h + S1 + ch + K[i] + w[i]) | 0;
+        const S0 = rotr(a, 2) ^ rotr(a, 13) ^ rotr(a, 22);
+        const mj = (a & b) ^ (a & c) ^ (b & c);
+        const t2 = (S0 + mj) | 0;
+        h = g; g = f; f = e; e = (d + t1) | 0; d = c; c = b; b = a; a = (t1 + t2) | 0;
+      }
+      H[0] = (H[0] + a) | 0; H[1] = (H[1] + b) | 0; H[2] = (H[2] + c) | 0; H[3] = (H[3] + d) | 0;
+      H[4] = (H[4] + e) | 0; H[5] = (H[5] + f) | 0; H[6] = (H[6] + g) | 0; H[7] = (H[7] + h) | 0;
+    }
+    return H.map(x => (x >>> 0).toString(16).padStart(8, "0")).join("");
+  }
+  const PASS_HASH = "3b1b7bf331697996ad9b3b954e26bde56a35a43f80d9f186dc3782b1c5b0c441";
+
+  async function apiFetch(path, opts) {
+    const ctrl = new AbortController();
+    const to = setTimeout(() => ctrl.abort(), 12000);
+    try {
+      return await fetch(API + path, Object.assign({ cache: "no-store", signal: ctrl.signal }, opts || {}));
+    } finally { clearTimeout(to); }
+  }
+
+  async function apiPost(path, body) {
+    const res = await apiFetch(path, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+    let data = null;
+    try { data = await res.json(); } catch (e) {}
+    return { status: res.status, data };
+  }
+
+  // Ambil pengaturan terbaru dari server. true = siap (online atau mode lokal), false = gagal jaringan.
+  async function loadConfig() {
+    if (!backendExpected) { online = false; return true; }
+    try {
+      const res = await apiFetch("/config");
+      if (res.status === 404) { online = false; backendExpected = false; return true; }   // hosting statis tanpa Functions
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const c = await res.json();
+      if (!c || c.ok !== true) throw new Error("respons tidak valid");
+      online = true;
+      isGameOpen = !!c.open;
+      if ([25, 45, 60].includes(c.minutes)) quizMinutes = c.minutes;
+      activeQuestions = Array.isArray(c.questions) && c.questions.length ? c.questions : defaultBankQuestions;
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  const NET_MSG = "Tidak bisa terhubung ke server. Periksa sinyal/internet lalu coba lagi.";
+
+  async function adminCall(action, extra) {
+    try {
+      const r = await apiPost("/admin", Object.assign({ pass: teacherPass, action }, extra || {}));
+      if (r.status === 401) { alert("Sesi guru tidak valid. Silakan masuk ulang."); returnToHome(); return null; }
+      if (!(r.data && r.data.ok)) { alert("Gagal menyimpan ke server: " + ((r.data && r.data.error) || "coba lagi")); return null; }
+      return r.data;
+    } catch (e) {
+      alert(NET_MSG);
+      return null;
+    }
+  }
+
+  async function refreshRecords() {
+    if (!online) { renderStudentTable(); return; }
+    const d = await adminCall("results");
+    if (d) { studentRecords = d.results || []; renderStudentTable(); }
+  }
+
+  // Antrean pengiriman nilai (bertahan di perangkat siswa bila sinyal putus)
+  function loadPending() { try { const p = JSON.parse(localStorage.getItem("edugame_pending")); return Array.isArray(p) ? p : []; } catch (e) { return []; } }
+  function savePending(p) { try { localStorage.setItem("edugame_pending", JSON.stringify(p)); } catch (e) {} }
+
+  async function flushPending() {
+    const pend = loadPending();
+    if (!pend.length) return 0;
+    const rest = [];
+    for (const r of pend) {
+      try {
+        const x = await apiPost("/result", { record: r });
+        if (!(x.status === 200 && x.data && x.data.ok)) rest.push(r);
+      } catch (e) { rest.push(r); }
+    }
+    savePending(rest);
+    return rest.length;
+  }
+
+  function setSyncNote(text, color) {
+    const el = document.getElementById("syncNote");
+    if (el) { el.textContent = text; el.style.color = color; }
+  }
+
+  async function submitRecord(rec) {
+    if (!online) {
+      studentRecords.push(rec);
+      localStorage.setItem("edugame_records", JSON.stringify(studentRecords));
+      setSyncNote("", "inherit");
+      return;
+    }
+    const p = loadPending(); p.push(rec); savePending(p);
+    setSyncNote("Mengirim nilai ke guru...", "#8b6575");
+    const left = await flushPending();
+    if (left === 0) { setSyncNote("✓ Nilai sudah terkirim ke guru.", "#2f9e6e"); return; }
+    setSyncNote("Nilai belum terkirim. Jangan tutup halaman, sedang dicoba lagi...", "#dc2626");
+    clearInterval(pendingTimer);
+    pendingTimer = setInterval(async () => {
+      if (await flushPending() === 0) {
+        clearInterval(pendingTimer);
+        setSyncNote("✓ Nilai sudah terkirim ke guru.", "#2f9e6e");
+      }
+    }, 8000);
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  // ============================================================
+  // PANEL GURU
+  // ============================================================
+  function updatePanelUI() {
+    document.getElementById("totalQuestionsCount").innerText = activeQuestions.length;
+    document.getElementById("activeTokenText").innerText = activeToken;
+    const lockEl = document.getElementById("gameLockStatus");
+    const closeBtn = document.getElementById("closeGameBtn");
+    if (isGameOpen) {
+      lockEl.innerText = "TERBUKA";
+      lockEl.style.color = "var(--success)";
+      closeBtn.innerText = "Kunci Akses";
+      closeBtn.className = "btn btn-danger";
+    } else {
+      lockEl.innerText = "TERKUNCI";
+      lockEl.style.color = "var(--danger)";
+      closeBtn.innerText = "Buka Akses";
+      closeBtn.className = "btn btn-success";
+    }
+    document.getElementById("syncStatus").textContent = online
+      ? "● Online: token, durasi, soal & nilai tersimpan terpusat"
+      : "○ Lokal: data hanya di perangkat ini";
+    document.getElementById("durationLabel").innerText = quizMinutes + " menit";
+    document.querySelectorAll(".dur-btn").forEach(b => {
+      b.classList.toggle("active", parseInt(b.dataset.min, 10) === quizMinutes);
+    });
+    renderStudentTable();
+  }
+
+  async function setDuration(min) {
+    if (online) {
+      const d = await adminCall("setMinutes", { minutes: min });
+      if (!d) return;
+      quizMinutes = d.minutes;
+    } else {
+      quizMinutes = min;
+      lsSet("edugame_duration", String(min));
+    }
+    updatePanelUI();
+    alert("Durasi pengerjaan diatur menjadi " + min + " menit.");
+  }
+
+  async function changeTokenPrompt() {
+    const newToken = prompt("Masukkan Kunci Token Baru untuk Siswa:", activeToken);
+    if (newToken && newToken.trim() !== "") {
+      if (online) {
+        const d = await adminCall("setToken", { token: newToken.trim() });
+        if (!d) return;
+        activeToken = d.token;
+      } else {
+        activeToken = newToken.trim().toUpperCase();
+        localStorage.setItem("edugame_token", activeToken);
+      }
+      updatePanelUI();
+      alert("Token berhasil diperbarui menjadi: " + activeToken);
+    }
+  }
+
+  async function toggleCloseGame() {
+    if (online) {
+      const d = await adminCall("setOpen", { open: !isGameOpen });
+      if (!d) return;
+      isGameOpen = d.open;
+    } else {
+      isGameOpen = !isGameOpen;
+      localStorage.setItem("edugame_is_open", isGameOpen ? "true" : "false");
+    }
+    updatePanelUI();
+    alert(isGameOpen ? "Akses ujian sekarang DIBUKA!" : "Akses ujian sekarang DIKUNCI!");
+  }
+
+  async function processPastedQuestions() {
+    const raw = document.getElementById("pasteSoalArea").value.trim();
+    if (!raw) {
+      alert("Silakan tempel (paste) teks soal dari Word terlebih dahulu!");
+      return;
+    }
+
+    const blocks = raw.split(/\n\s*\n/);
+    const parsed = [];
+
+    blocks.forEach(block => {
+      const lines = block.split("\n").map(l => l.trim()).filter(l => l.length > 0);
+      if (lines.length >= 6) {
+        let qLine = lines[0].replace(/^\d+[\.\)]\s*/, '');
+        let opts = [];
+        let keyIdx = -1;
+
+        lines.slice(1).forEach(l => {
+          if (/^[A-Ea-e][\.\)]\s*/.test(l)) {
+            opts.push(l.replace(/^[A-Ea-e][\.\)]\s*/, ''));
+          } else if (/^(Kunci|Jawaban)\s*:\s*([A-Ea-e])/i.test(l)) {
+            const char = l.match(/^(Kunci|Jawaban)\s*:\s*([A-Ea-e])/i)[2].toUpperCase();
+            keyIdx = ["A", "B", "C", "D", "E"].indexOf(char);
+          }
+        });
+
+        if (opts.length >= 2 && keyIdx !== -1) {
+          parsed.push({ q: qLine, o: opts, a: keyIdx });
+        }
+      }
+    });
+
+    if (parsed.length > 0) {
+      if (online) {
+        const d = await adminCall("setQuestions", { questions: parsed });
+        if (!d) return;
+      } else {
+        localStorage.setItem("edugame_questions_v2", JSON.stringify(parsed));
+      }
+      activeQuestions = parsed;
+      updatePanelUI();
+      document.getElementById("pasteSoalArea").value = "";
+      alert(`Berhasil mengimpor ${parsed.length} soal baru ke dalam sistem!`);
+    } else {
+      alert("Gagal membaca format soal. Pastikan setiap soal memiliki nomor, pilihan A s.d E, dan baris 'Kunci: A'!");
+    }
+  }
+
+  async function resetDefaultQuestions() {
+    if (confirm("Kembalikan bank soal ke 80 soal sejarah standar?")) {
+      if (online) {
+        const d = await adminCall("resetQuestions");
+        if (!d) return;
+      } else {
+        localStorage.setItem("edugame_questions_v2", JSON.stringify(defaultBankQuestions));
+      }
+      activeQuestions = defaultBankQuestions;
+      updatePanelUI();
+      alert("Soal berhasil dikembalikan ke bawaan awal!");
+    }
+  }
+
+  // ============================================================
+  // MULAI MISI KUIS -> KARTU RENUNGAN -> PERMAINAN
+  // ============================================================
+  function buildRandomQuestions() {
+    const list = activeQuestions.map(item => {
+      let optObjects = item.o.map((optText, index) => ({ text: optText, isCorrect: index === item.a }));
+      for (let i = optObjects.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [optObjects[i], optObjects[j]] = [optObjects[j], optObjects[i]];
+      }
+      return { q: item.q, options: optObjects };
+    });
+    for (let i = list.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [list[i], list[j]] = [list[j], list[i]];
+    }
+    return list;
+  }
+
+  let starting = false;
+
+  async function startQuiz() {
+    if (starting) return;
+    initAudio();   // buka audio di dalam gerakan sentuh siswa (syarat browser HP)
+
+    const absen = document.getElementById("studentAbsen").value.trim();
+    const name = document.getElementById("studentName").value.trim();
+    const kls = document.getElementById("studentClass").value.trim();
+    const token = document.getElementById("inputToken").value.trim().toUpperCase();
+
+    if (!absen || !name || !kls) {
+      alert("Lengkapi Nomor Absen, Nama Lengkap, dan Kelas!");
+      return;
+    }
+
+    starting = true;
+    const btn = document.getElementById("startBtn");
+    const btnHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.textContent = "Menghubungkan...";
+    try {
+      // selalu ambil pengaturan terbaru guru (kunci akses, durasi, soal)
+      if (!(await loadConfig())) { alert(NET_MSG); return; }
+
+      if (!isGameOpen) {
+        alert("MAAF, UJIAN SEDANG DITUTUP OLEH GURU. Silakan hubungi Pak Nanang!");
+        return;
+      }
+
+      let tokenOk;
+      if (online) {
+        const r = await apiPost("/verify", { token });
+        tokenOk = !!(r.data && r.data.ok);
+      } else {
+        tokenOk = token === activeToken;
+      }
+      if (!tokenOk) {
+        alert("TOKEN SALAH! Minta kode token ujian kepada Pak Nanang.");
+        return;
+      }
+
+      launchQuiz(absen, name, kls);
+    } catch (e) {
+      alert(NET_MSG);
+    } finally {
+      starting = false;
+      btn.disabled = false;
+      btn.innerHTML = btnHtml;
+    }
+  }
+
+  function launchQuiz(absen, name, kls) {
+    currentStudent = { absen, name, kls };
+    userScore = 0;
+    correctCount = 0;
+    cheatWarnings = 0;
+    currentIdx = 0;
+    cheatLocked = false;
+    quizActive = false;
+    answered = false;
+    sessionId++;
+
+    randomizedQuestions = buildRandomQuestions();
+    document.getElementById("totalQNum").innerText = randomizedQuestions.length;
+
+    // Jingle arcade keras, lalu musik latar santai mengalun terus sampai permainan selesai
+    initAudio();
+    clearTimeout(previewTimer);
+    musicSession = true;
+    if (!isMuted()) {
+      playArcade(soundMode);
+      startBgm(soundMode, BGM_START_DELAY[soundMode] || 1.4);
+    }
+
+    showReflection();
+  }
+
+  function showReflection() {
+    let idx;
+    const last = parseInt(lsGet("edugame_last_reflect"), 10);
+    do {
+      idx = Math.floor(Math.random() * reflections.length);
+    } while (idx === last && reflections.length > 1);
+    lsSet("edugame_last_reflect", String(idx));
+    document.getElementById("reflectText").textContent = "“" + reflections[idx] + "”";
+
+    switchView("viewReflect");
+    window.scrollTo(0, 0);
+
+    const btn = document.getElementById("reflectBtn");
+    let c = 3;
+    btn.disabled = true;
+    btn.textContent = "Membaca renungan... " + c;
+    clearInterval(reflectTimer);
+    reflectTimer = setInterval(() => {
+      c--;
+      if (c <= 0) {
+        clearInterval(reflectTimer);
+        btn.disabled = false;
+        btn.textContent = "Saya Siap, Mulai Permainan";
+      } else {
+        btn.textContent = "Membaca renungan... " + c;
+      }
+    }, 1000);
+  }
+
+  function beginGame() {
+    clearInterval(reflectTimer);
+    quizActive = true;
+    cheatLocked = false;
+    switchView("viewQuiz");
+    window.scrollTo(0, 0);
+    renderQuestion();
+    startTimer();
+  }
+
+  function renderQuestion() {
+    const qData = randomizedQuestions[currentIdx];
+    if (!qData) return;
+    answered = false;
+    document.getElementById("currentQNum").innerText = currentIdx + 1;
+    document.getElementById("progressBar").style.width = `${((currentIdx) / randomizedQuestions.length) * 100}%`;
+    document.getElementById("qText").textContent = `${currentIdx + 1}. ${qData.q}`;
+
+    const optsContainer = document.getElementById("optionsList");
+    optsContainer.innerHTML = "";
+    const letters = ["A", "B", "C", "D", "E"];
+
+    qData.options.forEach((opt, idx) => {
+      const btn = document.createElement("button");
+      btn.className = "option-btn";
+      const badge = document.createElement("span");
+      badge.className = "opt-badge";
+      badge.textContent = letters[idx];
+      const txt = document.createElement("span");
+      txt.textContent = opt.text;
+      btn.appendChild(badge);
+      btn.appendChild(txt);
+      btn.onclick = () => selectAnswer(opt.isCorrect, btn);
+      optsContainer.appendChild(btn);
+    });
+  }
+
+  const SVG_OK = '<svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>';
+  const SVG_NO = '<svg viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l14 14M19 5L5 19"/></svg>';
+
+  function addMark(btn, ok) {
+    const m = document.createElement("span");
+    m.className = "mark " + (ok ? "ok" : "no");
+    m.innerHTML = ok ? SVG_OK : SVG_NO;
+    btn.appendChild(m);
+  }
+
+  function selectAnswer(isCorrect, element) {
+    if (!quizActive || cheatLocked || answered) return;
+    answered = true;
+    const mySession = sessionId;
+    const btns = Array.prototype.slice.call(document.querySelectorAll(".option-btn"));
+    btns.forEach(b => b.style.pointerEvents = "none");
+
+    if (isCorrect) {
+      element.classList.add("correct");
+      addMark(element, true);
+      playSoundCorrect();
+      correctCount++;
+    } else {
+      element.classList.add("wrong");
+      addMark(element, false);
+      playSoundWrong();
+      // tunjukkan jawaban yang benar dengan kedipan hijau
+      const qData = randomizedQuestions[currentIdx];
+      const ci = qData.options.findIndex(o => o.isCorrect);
+      if (btns[ci]) {
+        btns[ci].classList.add("correct", "reveal");
+        addMark(btns[ci], true);
+      }
+    }
+
+    setTimeout(() => {
+      if (mySession !== sessionId || !quizActive) return;
+      currentIdx++;
+      if (currentIdx < randomizedQuestions.length) {
+        renderQuestion();
+      } else {
+        finishQuiz();
+      }
+    }, FEEDBACK_MS);
+  }
+
+  // Waktu habis TIDAK memutus pengerjaan: siswa boleh menyelesaikan dulu
+  function updateTimerText() {
+    const badge = document.getElementById("timerBadge");
+    if (timeLeft > 0) {
+      const m = Math.floor(timeLeft / 60);
+      const s = timeLeft % 60;
+      document.getElementById("timerText").innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    } else {
+      if (!overtime) { overtime = true; badge.classList.add("over"); }
+      document.getElementById("timerText").innerText = "Waktu habis, selesaikan!";
+    }
+  }
+
+  function startTimer() {
+    clearInterval(timerInterval);
+    timeLeft = quizMinutes * 60;
+    overtime = false;
+    document.getElementById("timerBadge").classList.remove("over");
+    updateTimerText();
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      updateTimerText();
+    }, 1000);
+  }
+
+  // ============================================================
+  // PENCEGAHAN KECURANGAN (PINDAH TAB / KELUAR HALAMAN)
+  // ============================================================
+  function triggerCheat() {
+    if (!quizActive || cheatLocked) return;
+    cheatLocked = true;
+    cheatWarnings++;
+    stopBgm(true);
+    document.getElementById("cheatCountText").innerText = `Pelanggaran ke-${cheatWarnings}`;
+    document.getElementById("cheatExtraText").innerText = cheatWarnings > 2
+      ? "Batas toleransi terlampaui! Pengerjaan akan diulang dari soal nomor 1."
+      : `Kamu akan melanjutkan dari soal nomor ${currentIdx + 1}. Pelanggaran lebih dari 2 kali akan mengulang kuis dari awal.`;
+    document.getElementById("cheatOverlay").classList.add("show");
+    startSiren();
+  }
+
+  function resumeGame() {
+    stopSiren();
+    document.getElementById("cheatOverlay").classList.remove("show");
+    cheatLocked = false;
+    if (!quizActive) return;
+
+    if (cheatWarnings > 2) {
+      // Curang lebih dari 2 kali: ulang dari awal
+      sessionId++;
+      currentIdx = 0;
+      correctCount = 0;
+      randomizedQuestions = buildRandomQuestions();
+      startTimer();
+    }
+    renderQuestion(); // lanjut di nomor terakhir (atau nomor 1 bila diulang)
+    if (musicSession && !isMuted()) startBgm(soundMode, 0.2);
+  }
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      triggerCheat();
+    } else if (cheatLocked) {
+      initAudio();
+      if (!siren) startSiren(); // sirine kembali meraung saat siswa kembali ke halaman
+    }
+  });
+
+  window.addEventListener("blur", () => {
+    if (!quizActive || cheatLocked) return;
+    setTimeout(() => {
+      if (quizActive && !cheatLocked && !document.hasFocus()) triggerCheat();
+    }, 350);
+  });
+
+  document.addEventListener("contextmenu", e => { if (quizActive) e.preventDefault(); });
+  document.addEventListener("copy", e => { if (quizActive) e.preventDefault(); });
+  window.addEventListener("beforeunload", e => {
+    if (quizActive) { e.preventDefault(); e.returnValue = ""; }
+  });
+
+  // ============================================================
+  // SELESAI DAN REKAP HASIL
+  // ============================================================
+  function finishQuiz() {
+    clearInterval(timerInterval);
+    quizActive = false;
+    cheatLocked = false;
+    musicSession = false;
+    stopBgm();
+    stopSiren();
+    document.getElementById("cheatOverlay").classList.remove("show");
+
+    const totalQ = randomizedQuestions.length;
+    userScore = Math.round((correctCount / totalQ) * 100);
+
+    const record = {
+      id: Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8),
+      absen: currentStudent.absen,
+      nama: currentStudent.name,
+      kelas: currentStudent.kls,
+      benar: correctCount,
+      skor: userScore,
+      curang: cheatWarnings,
+      waktu: new Date().toLocaleTimeString()
+    };
+    submitRecord(record);
+
+    document.getElementById("scoreDisplay").innerText = userScore;
+    document.getElementById("resName").innerText = currentStudent.name;
+    document.getElementById("resClassAbsen").innerText = `${currentStudent.kls} (Absen: ${currentStudent.absen})`;
+    document.getElementById("resCorrect").innerText = `${correctCount} dari ${totalQ} Soal`;
+    document.getElementById("resCheats").innerText = `${cheatWarnings} kali`;
+
+    const card = document.getElementById("rewardCard");
+    const passed = userScore >= PASS_SCORE;
+    if (passed) {
+      card.className = "reward-card win";
+      document.getElementById("rewardIcon").innerText = "🏆";
+      document.getElementById("rewardTitle").innerText = "KAMU BERHASIL";
+      document.getElementById("rewardSub").innerText = "Selamat! Misi sejarah berhasil kamu taklukkan.";
+    } else {
+      card.className = "reward-card lose";
+      document.getElementById("rewardIcon").innerText = "💪";
+      document.getElementById("rewardTitle").innerText = "JANGAN PUTUS ASA";
+      document.getElementById("rewardSub").innerText = "Kamu harus berjuang lagi!";
+    }
+
+    switchView("viewResult");
+    window.scrollTo(0, 0);
+    if (passed) {
+      playFanfareTrumpet();
+      startStarRain();
+    } else {
+      stopStarRain();
+      playSoundTryAgain();
+    }
+  }
+
+  // ============================================================
+  // TABURAN BINTANG (hanya saat nilai >= 81)
+  // ============================================================
+  let stars = [];
+  let animId = null;
+
+  function drawStar(ctx, r) {
+    ctx.beginPath();
+    for (let i = 0; i < 10; i++) {
+      const rad = i % 2 === 0 ? r : r * 0.45;
+      const ang = (Math.PI / 5) * i - Math.PI / 2;
+      const x = Math.cos(ang) * rad;
+      const y = Math.sin(ang) * rad;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function stopStarRain() {
+    cancelAnimationFrame(animId);
+    animId = null;
+    const canvas = document.getElementById("starCanvas");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  function startStarRain() {
+    const canvas = document.getElementById("starCanvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = canvas.parentElement.clientWidth;
+    canvas.height = canvas.parentElement.clientHeight;
+
+    stars = [];
+    const colors = ["#fbbf24", "#f59e0b", "#fde68a", "#f9a8d4", "#ffffff", "#f472b6"];
+    for (let i = 0; i < 60; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        size: Math.random() * 9 + 6,
+        speed: Math.random() * 2 + 1.5,
+        angle: Math.random() * 360,
+        spin: Math.random() * 4 - 2,
+        color: colors[Math.floor(Math.random() * colors.length)]
+      });
+    }
+
+    function renderStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      stars.forEach(s => {
+        ctx.save();
+        ctx.translate(s.x, s.y);
+        ctx.rotate((s.angle * Math.PI) / 180);
+        ctx.fillStyle = s.color;
+        ctx.shadowColor = "rgba(224,160,64,0.6)";
+        ctx.shadowBlur = 6;
+        drawStar(ctx, s.size);
+        ctx.restore();
+
+        s.y += s.speed;
+        s.angle += s.spin;
+        if (s.y > canvas.height + 10) { s.y = -10; s.x = Math.random() * canvas.width; }
+      });
+      animId = requestAnimationFrame(renderStars);
+    }
+    cancelAnimationFrame(animId);
+    renderStars();
+  }
+
+  // ============================================================
+  // NAVIGASI HALAMAN (VIEWS)
+  // ============================================================
+  function switchView(viewId) {
+    document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+    document.getElementById(viewId).classList.add("active");
+  }
+
+  function returnToHome() {
+    stopStarRain();
+    stopSiren();
+    stopBgm(true);
+    clearTimeout(previewTimer);
+    clearInterval(reflectTimer);
+    musicSession = false;
+    quizActive = false;
+    cheatLocked = false;
+    clearInterval(timerInterval);
+    document.getElementById("cheatOverlay").classList.remove("show");
+    document.getElementById("inputToken").value = "";
+    switchView("viewLogin");
+  }
+
+  function showTeacherLogin() {
+    document.getElementById("teacherPass").value = "";
+    switchView("viewTeacherLogin");
+  }
+
+  async function verifyTeacherPass() {
+    const p = document.getElementById("teacherPass").value;
+    if (backendExpected) {
+      const reached = await loadConfig();
+      if (online) {
+        try {
+          const r = await apiPost("/admin", { pass: p, action: "login" });
+          if (r.status === 200 && r.data && r.data.ok) {
+            teacherPass = p;
+            activeToken = r.data.token;
+            isGameOpen = r.data.open;
+            if ([25, 45, 60].includes(r.data.minutes)) quizMinutes = r.data.minutes;
+            await refreshRecords();
+            updatePanelUI();
+            switchView("viewDashboard");
+          } else {
+            alert("Kata sandi salah!");
+          }
+        } catch (e) { alert(NET_MSG); }
+        return;
+      }
+      if (!reached) { alert(NET_MSG); return; }
+    }
+    // mode lokal (tanpa server)
+    if (sha256(p) === PASS_HASH) {
+      updatePanelUI();
+      switchView("viewDashboard");
+    } else {
+      alert("Kata sandi salah!");
+    }
+  }
+
+  // ============================================================
+  // TABEL REKAP & CSV (PANEL GURU)
+  // ============================================================
+  function renderStudentTable() {
+    const tbody = document.getElementById("studentTableBody");
+    tbody.innerHTML = "";
+    if (studentRecords.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #94a3b8;">Belum ada data nilai masuk.</td></tr>`;
+      return;
+    }
+    studentRecords.forEach(r => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${escapeHtml(r.absen)}</td><td>${escapeHtml(r.nama)}</td><td>${escapeHtml(r.kelas)}</td><td><strong>${escapeHtml(r.skor)}</strong></td><td style="color:${r.curang > 0 ? 'var(--danger)' : 'inherit'}">${escapeHtml(r.curang)}</td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  async function clearRecords() {
+    if (confirm(online ? "Hapus SELURUH catatan nilai siswa di server?" : "Hapus seluruh catatan nilai siswa di perangkat ini?")) {
+      if (online) {
+        const d = await adminCall("clearResults");
+        if (!d) return;
+      } else {
+        localStorage.removeItem("edugame_records");
+      }
+      studentRecords = [];
+      renderStudentTable();
+    }
+  }
+
+  function downloadCSV() {
+    if (studentRecords.length === 0) {
+      alert("Belum ada data nilai siswa!");
+      return;
+    }
+    let csv = "Nomor Absen,Nama Lengkap,Kelas,Jawaban Benar,Total Skor,Pelanggaran,Waktu\n";
+    studentRecords.forEach(r => {
+      csv += `"${r.absen}","${r.nama}","${r.kelas}",${r.benar},${r.skor},${r.curang},"${r.waktu}"\n`;
+    });
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `Rekap_Nilai_EduHistory_${new Date().toISOString().slice(0,10)}.csv`;
+    link.click();
+  }
+
+  // Inisialisasi awal
+  refreshSoundUI();
+  updatePanelUI();
+  loadConfig().then(() => {
+    updatePanelUI();
+    if (online) flushPending();   // kirim nilai tertunda dari sesi sebelumnya
+  });
+  window.addEventListener("online", () => { if (online) flushPending(); });
+</script>
+</body>
+</html>
